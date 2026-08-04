@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Captions and Content</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* AI ESSENTIALS - AI in Social Media - Captions and Content
+   Scoped under #ais-art for WordPress/Elementor safety */
+
+#ais-art *, #ais-art *::before, #ais-art *::after { box-sizing: border-box; }
+#ais-art {
+  --purple:#7B2FBE; --purple-deep:#4A1A73; --purple-lift:#9B5DE0;
+  --wash:#F7F1FD; --wash-2:#EFE4FB; --edge:#E4D6F5;
+  --ink:#1A1125; --ink-soft:#574A66; --coral:#E0503C; --coral-wash:#FDF0EE;
+  --serif:'Fraunces',Georgia,serif; --sans:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono','Courier New',monospace;
+  background:#FFFFFF !important; color:var(--ink); font-family:var(--sans);
+  font-size:18px; line-height:1.72; -webkit-font-smoothing:antialiased; padding:0 24px 120px;
+}
+#ais-art .ais-wrap { max-width:860px; margin:0 auto; }
+
+#ais-art .reveal { opacity:0; transform:translateY(22px);
+  transition:opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1); }
+#ais-art .reveal.is-in { opacity:1; transform:none; }
+@media (prefers-reduced-motion: reduce){
+  #ais-art .reveal{opacity:1!important;transform:none!important;transition:none!important}
+  #ais-art *{animation:none!important}
+}
+@keyframes aisFade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+#ais-art h1,#ais-art h2,#ais-art h3{font-family:var(--serif);color:var(--ink);font-weight:600;
+  line-height:1.14;margin:0;letter-spacing:-.015em}
+#ais-art h1{font-size:clamp(2.4rem,6vw,3.8rem);font-weight:700}
+#ais-art h2{font-size:clamp(1.75rem,4vw,2.3rem);margin-bottom:14px}
+#ais-art h3{font-size:1.22rem}
+#ais-art p{margin:0 0 22px;color:var(--ink-soft)}
+#ais-art p strong{color:var(--ink);font-weight:700}
+#ais-art .eyebrow{font-family:var(--mono);font-size:.74rem;font-weight:600;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--purple);display:block;margin-bottom:14px}
+#ais-art .lede{font-size:1.25rem;line-height:1.62;color:var(--ink)}
+
+/* typographic hero */
+#ais-art .hero{padding-top:56px}
+#ais-art .hero-rule{width:64px;height:5px;background:var(--purple);border-radius:3px;margin-bottom:26px}
+#ais-art .hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px;padding-top:26px;
+  border-top:1px solid var(--edge)}
+#ais-art .chip{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;background:var(--wash);color:var(--purple-deep);
+  border:1px solid var(--edge);border-radius:100px;padding:7px 14px}
+#ais-art .chip.solid{background:var(--purple);color:#fff;border-color:var(--purple)}
+
+#ais-art .sec{margin-top:78px}
+#ais-art .pull{font-family:var(--serif);font-size:clamp(1.45rem,3.6vw,2rem);font-weight:600;
+  line-height:1.3;color:var(--purple-deep);border-left:4px solid var(--purple);
+  padding:6px 0 6px 28px;margin:48px 0}
+
+/* capability blocks */
+#ais-art .caps{margin-top:34px}
+#ais-art .cap{border:1.5px solid var(--edge);border-radius:18px;padding:30px;margin-bottom:16px;background:#fff}
+#ais-art .cap-n{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.14em;
+  color:var(--purple);display:block;margin-bottom:10px}
+#ais-art .cap h3{font-size:1.3rem;margin-bottom:10px}
+#ais-art .cap > p{font-size:.98rem;line-height:1.65;margin:0 0 18px}
+#ais-art .cap ul{margin:0;padding:0;list-style:none;border-top:1px solid var(--edge)}
+#ais-art .cap li{display:grid;grid-template-columns:22px 1fr;gap:12px;padding:13px 0;
+  border-bottom:1px solid var(--edge);font-size:.94rem;line-height:1.55;color:var(--ink-soft)}
+#ais-art .cap li:last-child{border-bottom:0}
+#ais-art .cap li b{color:var(--ink);font-weight:700}
+#ais-art .cap li i{font-style:normal;font-family:var(--mono);font-size:.75rem;color:var(--purple);padding-top:2px}
+
+/* generic sim */
+#ais-art .sim{border:1.5px solid var(--edge);border-radius:20px;padding:32px;margin-top:34px;background:#fff}
+#ais-art .sim-bar{display:flex;gap:6px;margin-bottom:20px}
+#ais-art .sim-pip{flex:1;height:5px;border-radius:4px;background:var(--edge);transition:background .3s ease}
+#ais-art .sim-pip.done{background:var(--purple)}
+#ais-art .sim-count{font-family:var(--mono);font-size:.73rem;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-soft);display:block;margin-bottom:10px}
+#ais-art .sim-setup{font-family:var(--mono);font-size:.74rem;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--purple);display:block;margin-bottom:10px}
+#ais-art .sim-card{background:var(--wash);border:1px solid var(--edge);border-radius:14px;padding:26px 24px}
+#ais-art .sim-card p{margin:0;font-family:var(--serif);font-size:1.13rem;font-weight:500;
+  color:var(--ink);line-height:1.42}
+#ais-art .sim-opts{margin-top:16px}
+#ais-art .sim-opt{display:block;width:100%;text-align:left;font-family:var(--sans);font-size:.96rem;
+  line-height:1.5;background:#fff;border:1.5px solid var(--edge);border-radius:12px;
+  padding:15px 18px;margin-bottom:10px;cursor:pointer;color:var(--ink);
+  transition:border-color .18s ease,background .18s ease}
+#ais-art .sim-opt:hover:not(:disabled){border-color:var(--purple-lift);background:var(--wash)}
+#ais-art .sim-opt:focus-visible{outline:3px solid var(--purple);outline-offset:2px}
+#ais-art .sim-opt:disabled{cursor:default}
+#ais-art .sim-opt.correct{border-color:var(--purple);background:var(--wash);font-weight:700}
+#ais-art .sim-opt.incorrect{border-color:var(--coral);background:var(--coral-wash)}
+#ais-art .sim-fb{display:none;margin-top:14px;border-radius:12px;padding:17px 20px;font-size:.94rem;line-height:1.6}
+#ais-art .sim-fb.show{display:block;animation:aisFade .35s ease both}
+#ais-art .sim-fb.right{background:var(--wash);border-left:3px solid var(--purple);color:var(--ink-soft)}
+#ais-art .sim-fb.wrong{background:var(--coral-wash);border-left:3px solid var(--coral);color:var(--ink-soft)}
+#ais-art .sim-fb b{color:var(--ink)}
+#ais-art .sim-next{font-family:var(--sans);font-weight:700;font-size:.95rem;background:var(--ink);
+  color:#fff;border:0;border-radius:100px;padding:14px 30px;margin-top:16px;cursor:pointer;display:none}
+#ais-art .sim-next.show{display:inline-block}
+#ais-art .sim-next:focus-visible{outline:3px solid var(--purple);outline-offset:3px}
+#ais-art .sim-done{display:none;text-align:center;padding:10px 0}
+#ais-art .sim-done.show{display:block;animation:aisFade .5s ease both}
+#ais-art .sim-done .score{font-family:var(--serif);font-size:3.2rem;font-weight:700;color:var(--purple);
+  line-height:1;display:block}
+#ais-art .sim-done p{margin:16px auto 0;max-width:480px}
+
+/* spot-the-problem */
+#ais-art .spot{border:1.5px solid var(--edge);border-radius:20px;padding:32px;margin-top:34px;background:#fff}
+#ais-art .spot-head{font-family:var(--mono);font-size:.73rem;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--purple);display:block;margin-bottom:14px}
+#ais-art .spot-text{background:var(--wash);border:1px solid var(--edge);border-radius:14px;
+  padding:26px 24px;font-family:var(--serif);font-size:1.14rem;line-height:1.85;color:var(--ink)}
+#ais-art .spot-w{cursor:pointer;border-radius:5px;padding:2px 3px;margin:0 -1px;
+  transition:background .16s ease,box-shadow .16s ease}
+#ais-art .spot-w:hover{background:var(--wash-2)}
+#ais-art .spot-w:focus-visible{outline:3px solid var(--purple);outline-offset:1px}
+#ais-art .spot-w.hit{background:var(--purple);color:#fff;font-weight:600}
+#ais-art .spot-w.miss{background:var(--coral-wash);box-shadow:inset 0 -2px 0 var(--coral)}
+#ais-art .spot-status{font-family:var(--mono);font-size:.74rem;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-soft);display:block;margin-top:18px}
+#ais-art .spot-fb{display:none;margin-top:14px;border-radius:12px;padding:17px 20px;
+  font-size:.94rem;line-height:1.6;background:var(--wash);border-left:3px solid var(--purple);color:var(--ink-soft)}
+#ais-art .spot-fb.show{display:block;animation:aisFade .3s ease both}
+#ais-art .spot-fb.warn{background:var(--coral-wash);border-left-color:var(--coral)}
+#ais-art .spot-fb b{color:var(--ink)}
+#ais-art .spot-done{display:none;margin-top:18px;background:var(--purple);color:#fff;
+  border-radius:14px;padding:22px 24px}
+#ais-art .spot-done.show{display:block;animation:aisFade .45s ease both}
+#ais-art .spot-done p{margin:0;color:rgba(255,255,255,.92);font-size:.98rem}
+#ais-art .spot-done b{color:#fff}
+
+/* prompt builder */
+#ais-art .pb{border:1.5px solid var(--edge);border-radius:20px;padding:32px;margin-top:34px;background:#fff}
+#ais-art .pb-row{margin-bottom:22px}
+#ais-art .pb-lab{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--purple);display:block;margin-bottom:10px}
+#ais-art .pb-chips{display:flex;flex-wrap:wrap;gap:9px}
+#ais-art .pb-chip{font-family:var(--sans);font-size:.9rem;line-height:1.4;background:#fff;
+  border:1.5px solid var(--edge);border-radius:10px;padding:11px 15px;cursor:pointer;
+  color:var(--ink);text-align:left;transition:border-color .18s ease,background .18s ease}
+#ais-art .pb-chip:hover{border-color:var(--purple-lift);background:var(--wash)}
+#ais-art .pb-chip:focus-visible{outline:3px solid var(--purple);outline-offset:2px}
+#ais-art .pb-chip.on{border-color:var(--purple);background:var(--purple);color:#fff;font-weight:600}
+#ais-art .pb-out{background:var(--ink);border-radius:14px;padding:24px;margin-top:8px}
+#ais-art .pb-out-lab{font-family:var(--mono);font-size:.68rem;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:rgba(255,255,255,.55);display:block;margin-bottom:12px}
+#ais-art .pb-out code{font-family:var(--mono);font-size:.92rem;line-height:1.7;color:#fff;
+  display:block;word-break:break-word}
+#ais-art .pb-meter{height:8px;border-radius:5px;background:var(--wash-2);overflow:hidden;margin-top:22px}
+#ais-art .pb-meter i{display:block;height:100%;width:0;background:var(--purple);
+  transition:width .5s cubic-bezier(.16,1,.3,1)}
+#ais-art .pb-note{font-size:.93rem;line-height:1.6;color:var(--ink-soft);margin:14px 0 0}
+#ais-art .pb-note b{color:var(--ink)}
+
+/* facts */
+#ais-art .facts{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:34px}
+#ais-art .fact{background:var(--wash);border:1px solid var(--edge);border-radius:16px;padding:24px 22px}
+#ais-art .fact h3{font-size:1.02rem;margin-bottom:8px}
+#ais-art .fact p{font-size:.92rem;line-height:1.58;margin:0}
+
+/* limits list */
+#ais-art .limits{margin-top:30px}
+#ais-art .limit{display:grid;grid-template-columns:30px 1fr;gap:14px;padding:15px 0;
+  border-bottom:1px solid var(--edge);align-items:start}
+#ais-art .limit:first-child{border-top:1px solid var(--edge)}
+#ais-art .limit span.dot{font-family:var(--mono);font-size:.8rem;font-weight:600;color:var(--coral);padding-top:3px}
+#ais-art .limit div b{display:block;font-family:var(--sans);font-weight:700;color:var(--ink);
+  font-size:.98rem;margin-bottom:2px}
+#ais-art .limit div span{font-size:.91rem;color:var(--ink-soft);line-height:1.55}
+
+/* quiz */
+#ais-art .quiz{margin-top:34px}
+#ais-art .q{border:1.5px solid var(--edge);border-radius:16px;padding:26px;margin-bottom:16px}
+#ais-art .q .qnum{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.14em;
+  color:var(--purple);display:block;margin-bottom:10px}
+#ais-art .q h3{font-size:1.1rem;margin-bottom:18px;line-height:1.38}
+#ais-art .opt{display:block;width:100%;text-align:left;font-family:var(--sans);font-size:.96rem;
+  line-height:1.5;background:#fff;border:1.5px solid var(--edge);border-radius:11px;
+  padding:14px 18px;margin-bottom:9px;cursor:pointer;color:var(--ink);
+  transition:border-color .18s ease,background .18s ease}
+#ais-art .opt:hover:not(:disabled){border-color:var(--purple-lift);background:var(--wash)}
+#ais-art .opt:focus-visible{outline:3px solid var(--purple);outline-offset:2px}
+#ais-art .opt:disabled{cursor:default}
+#ais-art .opt.correct{border-color:var(--purple);background:var(--wash);font-weight:700}
+#ais-art .opt.incorrect{border-color:var(--coral);background:var(--coral-wash)}
+#ais-art .q-fb{display:none;font-size:.92rem;line-height:1.6;color:var(--ink-soft);
+  background:var(--wash);border-radius:10px;padding:15px 18px;margin-top:12px}
+#ais-art .q-fb.show{display:block;animation:aisFade .35s ease both}
+
+/* roadmap */
+#ais-art .road{margin-top:34px;border-top:1px solid var(--edge)}
+#ais-art .road-item{display:grid;grid-template-columns:74px 1fr;gap:20px;padding:22px 4px;
+  border-bottom:1px solid var(--edge);align-items:start}
+#ais-art .road-n{font-family:var(--mono);font-size:.74rem;font-weight:600;color:var(--purple);
+  letter-spacing:.06em;padding-top:4px}
+#ais-art .road-item h3{font-size:1.06rem;margin-bottom:5px}
+#ais-art .road-item p{font-size:.93rem;margin:0}
+
+#ais-art .closer{margin-top:74px;background:var(--wash);border-radius:22px;padding:46px 40px;text-align:center}
+#ais-art .closer p{max-width:560px;margin:0 auto;font-size:1.05rem}
+#ais-art .rule{font-family:var(--serif);font-size:clamp(1.45rem,3.4vw,1.95rem);font-weight:600;
+  color:var(--purple-deep);line-height:1.3;margin:0 auto 20px;max-width:620px}
+
+@media (max-width:700px){
+  #ais-art{font-size:17px;padding:0 18px 90px}
+  #ais-art .hero{padding-top:38px}
+  #ais-art .facts{grid-template-columns:1fr}
+  #ais-art .sim,#ais-art .spot,#ais-art .pb,#ais-art .cap{padding:22px}
+  #ais-art .spot-text{padding:20px 18px;font-size:1.05rem}
+  #ais-art .closer{padding:34px 24px}
+  #ais-art .pull{padding-left:20px;margin:38px 0}
+  #ais-art .road-item{grid-template-columns:58px 1fr;gap:14px}
+  #ais-art .sec{margin-top:60px}
+}
+
+</style>
+</head>
+<body>
+<div id="ais-art"><div class="ais-wrap">
+  <header class="hero">
+    <div class="hero-rule reveal"></div>
+    <span class="eyebrow reveal">Impact Series &middot; Deep Dive 3 of 3</span>
+    <h1 class="reveal">Captions and content</h1>
+    <p class="lede reveal" style="margin-top:22px">This is the tool group people reach for most and think about least. Writing tools are fast, fluent, and confident, and that combination is exactly what makes them risky. A wrong sentence that reads well is harder to catch than one that reads badly.</p>
+    <div class="hero-meta reveal"><span class="chip solid">6 min read</span><span class="chip">Draft triage</span><span class="chip">Claim checking</span></div>
+  </header>
+
+  <section class="sec reveal">
+    <span class="eyebrow">What the tools do</span>
+    <h2>Short form and long form</h2>
+    <p>Writing tools do two related jobs. One is producing many short options quickly. The other is reshaping one long idea into a different format.</p>
+
+    <div class="caps">
+      <div class="cap">
+        <span class="cap-n">CAPABILITY 01</span>
+        <h3>Captions, blog posts, and ad copy</h3>
+        <p>Producing written material from a brief, usually many versions at once so you can compare instead of committing.</p>
+        <ul><li><i>01</i><div><b>Captions at volume.</b> Ten or twenty versions of the same post in seconds, which turns writing into choosing.</div></li><li><i>02</i><div><b>Longer pieces.</b> Blog posts and articles drafted from an outline, which then need real editing rather than a quick read.</div></li><li><i>03</i><div><b>Ad copy.</b> Headline and body variations built for testing, where having many options is the entire point.</div></li></ul>
+      </div>
+      <div class="cap">
+        <span class="cap-n">CAPABILITY 02</span>
+        <h3>Hooks, posts, and full threads</h3>
+        <p>Taking one idea and breaking it into a sequence, or finding the opening line that makes someone stop.</p>
+        <ul><li><i>01</i><div><b>Hook generation.</b> Forty opening lines in a minute. The value is in the range, not in any single one being right.</div></li><li><i>02</i><div><b>Threads and series.</b> Turning one long piece into eight short connected posts, each of which has to stand alone.</div></li><li><i>03</i><div><b>Repurposing.</b> Rewriting the same idea for a different platform, where length and tone conventions are completely different.</div></li></ul>
+      </div>
+    </div>
+  </section>
+
+  <p class="pull reveal">Fluent is not the same as true. That gap is where the job now lives.</p>
+
+  <section class="sec reveal">
+    <span class="eyebrow">Activity 1 &middot; Five drafts</span>
+    <h2>Ship it, fix it, or kill it</h2>
+    <p>An AI tool just gave you five captions for a clothing brand. Decide what to do with each one. There is a defensible answer every time.</p>
+    <div class="sim" data-sim="triage">
+      <span class="sim-count"></span>
+      <div class="sim-bar"></div>
+      <div class="sim-play">
+        <span class="sim-setup"></span>
+        <div class="sim-card"></div>
+        <div class="sim-opts"></div>
+        <div class="sim-fb"></div>
+        <button class="sim-next" type="button">Next</button>
+      </div>
+      <div class="sim-done">
+        <span class="score">0 / 0</span>
+        <p class="sim-msg"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec reveal">
+    <span class="eyebrow">Activity 2 &middot; Find four claims</span>
+    <h2>Check the claims</h2>
+    <p>This is the highest stakes habit in the entire group of tools. Below is AI written ad copy that reads perfectly well. Four claims in it must be verified before anyone publishes this. Tap each one.</p>
+    <div class="spot" data-spot>
+      <span class="spot-head">AI wrote this ad for a college welding program. Four claims must be verified before it goes out. Tap each one.</span>
+      <div class="spot-text">Our welding program has a <span class="spot-w" data-fix="Where did this number come from? AI produces specific sounding statistics with no source. Placement rates are also regulated claims in education, so publishing an invented one creates real legal exposure.">94 percent job placement rate</span>. Graduates earn an average starting salary of <span class="spot-w" data-fix="Another confident number with no origin. Salary claims influence enrollment decisions, which is exactly why they get challenged and why they need a documented source.">$68,000 in their first year</span>. The program is fully accredited by the <span class="spot-w" data-fix="This organization may not exist. AI invents official sounding names constantly, and claiming a false accreditation is one of the most serious mistakes on this page.">National Welding Board</span>. <span class="spot-w" data-ok="This is a plain fact about your own operation that anyone internally can confirm in a minute. Low risk.">Classes are held on our main campus</span>. We are the <span class="spot-w" data-fix="Superlatives like largest, best, and first are claims a competitor can and will challenge. If you cannot prove it with a source, it does not go out.">largest welding school in the Midwest</span>.</div>
+      <span class="spot-status"></span>
+      <div class="spot-fb"></div>
+      <div class="spot-done"><p><b>All four found.</b> Notice the pattern: every one was a number, an official sounding name, or a superlative. Those are the three shapes an invented claim takes, and they are the three things to check every single time.</p></div>
+    </div>
+  </section>
+
+  <section class="sec reveal">
+    <span class="eyebrow">The limits</span>
+    <h2>What writing tools get wrong</h2>
+    <p>These failures are harder to spot than image failures, because bad writing at least looks like bad writing. Wrong writing looks fine.</p>
+      <div class="limits">
+        <div class="limit"><span class="dot">01</span><div><b>Inventing facts</b><span>Statistics, dates, quotes, studies, and organizations get produced with total confidence and no source. This is the single biggest risk in the group.</span></div></div>
+        <div class="limit"><span class="dot">02</span><div><b>Sounding like everyone else</b><span>These tools have a default voice, and audiences have learned to recognize it. Reading a draft out loud is the fastest filter there is.</span></div></div>
+        <div class="limit"><span class="dot">03</span><div><b>Missing required disclosures</b><span>A tool will happily write a paid post with no partnership label. That requirement is on you, and it carries legal weight.</span></div></div>
+        <div class="limit"><span class="dot">04</span><div><b>Confidence without knowledge</b><span>There is no tone change when the tool is guessing. It cannot tell you which parts of its own output it is unsure about.</span></div></div>
+        <div class="limit"><span class="dot">05</span><div><b>Losing what makes it yours</b><span>The specific detail that made a story worth telling is usually the first thing smoothed out of a draft. Put it back.</span></div></div>
+      </div>
+  </section>
+
+  <section class="sec reveal">
+    <span class="eyebrow">Knowledge check</span>
+    <h2>Three quick questions</h2>
+    <p>Check the main ideas from this deep dive.</p>
+    <div class="quiz" id="quiz"></div>
+  </section>
+
+  <section class="closer reveal">
+    <span class="eyebrow">Take this with you</span>
+    <p class="rule">The draft arrives in eight seconds. Being responsible for it takes a little longer.</p>
+    <p>Every number, every official name, and every claim about being the best needs a source before it goes out under your name. That habit alone will make you more valuable than the tool.</p>
+  </section>
+</div></div>
+<script>
+window.__AIS_SIMS__ = {"triage": {"unit": "Draft", "yes": "Agreed.", "no": "I would go the other way.", "hi": "You are reading these the way an editor does, which is the only useful way to read AI output.", "lo": "Worth another pass. The questions to ask are always the same: does it say something specific, is every claim true, and does it sound like a person.", "rounds": [{"setup": "Draft 1", "prompt": "Introducing our newest product, designed to elevate your everyday experience.", "options": [{"label": "Ship it", "right": false, "fb": "Read it again and ask what the product is. This sentence could sell a mattress, a phone, or a sandwich, which means it sells none of them."}, {"label": "Fix it", "right": false, "fb": "There is nothing here to fix. Every word is filler, so fixing it means writing something new from scratch anyway."}, {"label": "Kill it", "right": true, "fb": "This is the default voice these tools fall into when the request was vague. It contains no information. Start over with a specific description of the actual product."}]}, {"setup": "Draft 2", "prompt": "New hoodie. Same fleece as last year, three new colors. Runs about a size big.", "options": [{"label": "Ship it", "right": true, "fb": "It is specific, it is honest, and the sizing note answers the question the comments were going to ask anyway. Useful beats clever most of the time."}, {"label": "Fix it", "right": false, "fb": "You could add personality, but be careful. Everything here does a job, and adding flourish often means cutting the sizing note, which is the most useful part."}, {"label": "Kill it", "right": false, "fb": "This is the strongest of the five. Plain is not the same as bad."}]}, {"setup": "Draft 3", "prompt": "This hoodie is clinically proven to reduce stress by 40 percent.", "options": [{"label": "Ship it", "right": false, "fb": "Nothing about a hoodie is clinically proven to do anything. Posting this exposes the company to a real advertising complaint."}, {"label": "Fix it", "right": false, "fb": "You cannot soften an invented statistic into an acceptable one. The number came from nowhere, so there is nothing to adjust."}, {"label": "Kill it", "right": true, "fb": "The tool generated a specific sounding claim with no source, which is one of the most dangerous things it does. Any statistic in AI output needs a real source or it does not go out."}]}, {"setup": "Draft 4", "prompt": "POV: it is 6am and this is the only reason you got out of bed", "options": [{"label": "Ship it", "right": false, "fb": "The hook works, but a reader has no idea what the product is, and if this is a paid post it is missing the disclosure it legally needs."}, {"label": "Fix it", "right": true, "fb": "Keep the hook and add the two missing pieces: what the thing actually is, and the paid partnership label if money changed hands. Good opening, incomplete post."}, {"label": "Kill it", "right": false, "fb": "Throwing this away wastes a genuinely good first line. The opening is the hardest part and this one already works."}]}, {"setup": "Draft 5", "prompt": "Our team is SO excited to finally announce this amazing new launch we have been working on for months!!!", "options": [{"label": "Ship it", "right": false, "fb": "The reader learns that your team is excited and nothing else. Enthusiasm about an announcement is not the same as making the announcement."}, {"label": "Fix it", "right": true, "fb": "Cut everything before the news and lead with what launched. The excitement can survive in one clause at the end if it earns its place."}, {"label": "Kill it", "right": false, "fb": "There is a real announcement buried in here. It just needs to be moved to the front and stated plainly."}]}]}};
+window.__AIS_PB__ = null;
+window.__AIS_QUIZ__ = [{"q": "An AI draft includes a specific statistic with no source. What should you do?", "o": ["Post it, since specific numbers build trust", "Verify it against a real source or remove it", "Round it down to be safe"], "c": 1, "fb": "These tools produce confident, specific sounding numbers that came from nowhere. Rounding an invented statistic does not make it true. Every number needs a real source or it comes out."}, {"q": "Which three shapes does an invented claim usually take?", "o": ["Numbers, official sounding names, and superlatives", "Long sentences, big words, and passive voice", "Emojis, hashtags, and links"], "c": 0, "fb": "Statistics, made up organizations, and claims like largest or best are where fabrication concentrates. Scanning for those three shapes catches most of it fast."}, {"q": "A caption has a great hook but does not say what the product is, and it is a paid post. What is the call?", "o": ["Ship it, the hook is what matters", "Kill it and start over", "Fix it by adding the product and the paid partnership label"], "c": 2, "fb": "A working hook is the hardest part to write, so keeping it is worth doing. What is missing is information and a required disclosure, and both are quick to add."}];
+
+(function () {
+  var root = document.getElementById('ais-art');
+  if (!root) return;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var items = root.querySelectorAll('.reveal');
+  if (reduce || !('IntersectionObserver' in window)) {
+    items.forEach(function (el) { el.classList.add('is-in'); });
+  } else {
+    var obs = new IntersectionObserver(function (en) {
+      en.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); obs.unobserve(e.target); } });
+    }, { threshold: .12, rootMargin: '0px 0px -60px 0px' });
+    items.forEach(function (el) { obs.observe(el); });
+  }
+
+  /* ---- multi-instance scenario sim ---- */
+  var SIMS = window.__AIS_SIMS__ || {};
+  root.querySelectorAll('[data-sim]').forEach(function (box) {
+    var cfg = SIMS[box.getAttribute('data-sim')];
+    if (!cfg) return;
+    var rounds = cfg.rounds, i = 0, score = 0;
+    var $ = function (s) { return box.querySelector(s); };
+    var bar = $('.sim-bar'), cnt = $('.sim-count'), setup = $('.sim-setup'),
+        card = $('.sim-card'), opts = $('.sim-opts'), fb = $('.sim-fb'),
+        next = $('.sim-next'), play = $('.sim-play'), done = $('.sim-done');
+    bar.innerHTML = rounds.map(function () { return '<span class="sim-pip"></span>'; }).join('');
+    var pips = bar.querySelectorAll('.sim-pip');
+
+    function load() {
+      var r = rounds[i];
+      setup.textContent = r.setup || '';
+      card.innerHTML = '<p>' + r.prompt + '</p>';
+      cnt.textContent = (cfg.unit || 'Round') + ' ' + (i + 1) + ' of ' + rounds.length;
+      fb.className = 'sim-fb'; next.className = 'sim-next';
+      opts.innerHTML = r.options.map(function (o, j) {
+        return '<button class="sim-opt" type="button" data-i="' + j + '">' + o.label + '</button>';
+      }).join('');
+      opts.querySelectorAll('.sim-opt').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var pick = +b.getAttribute('data-i'), r2 = rounds[i], right = !!r2.options[pick].right;
+          if (right) score++;
+          pips[i].classList.add('done');
+          opts.querySelectorAll('.sim-opt').forEach(function (x, j) {
+            x.disabled = true;
+            if (r2.options[j].right) x.classList.add('correct');
+            else if (j === pick) x.classList.add('incorrect');
+          });
+          fb.className = 'sim-fb show ' + (right ? 'right' : 'wrong');
+          fb.innerHTML = '<b>' + (right ? (cfg.yes || 'Good call.') : (cfg.no || 'Not the strongest move.')) + '</b> ' + r2.options[pick].fb;
+          next.textContent = (i === rounds.length - 1) ? 'See your result' : ('Next ' + (cfg.unit || 'round').toLowerCase());
+          next.className = 'sim-next show';
+        });
+      });
+    }
+    next.addEventListener('click', function () {
+      i++;
+      if (i >= rounds.length) {
+        play.style.display = 'none';
+        cnt.textContent = 'Complete';
+        box.querySelector('.score').textContent = score + ' / ' + rounds.length;
+        box.querySelector('.sim-msg').textContent = (score >= rounds.length - 1) ? cfg.hi : cfg.lo;
+        done.classList.add('show');
+        return;
+      }
+      load();
+    });
+    load();
+  });
+
+  /* ---- spot the problem ---- */
+  root.querySelectorAll('[data-spot]').forEach(function (box) {
+    var words = box.querySelectorAll('.spot-w');
+    var targets = box.querySelectorAll('.spot-w[data-fix]');
+    var status = box.querySelector('.spot-status');
+    var fb = box.querySelector('.spot-fb');
+    var done = box.querySelector('.spot-done');
+    var total = targets.length, found = 0;
+    status.textContent = '0 of ' + total + ' found';
+    words.forEach(function (w) {
+      w.setAttribute('tabindex', '0');
+      w.setAttribute('role', 'button');
+      function hit() {
+        if (w.classList.contains('hit')) return;
+        if (w.hasAttribute('data-fix')) {
+          w.classList.add('hit'); found++;
+          status.textContent = found + ' of ' + total + ' found';
+          fb.className = 'spot-fb show';
+          fb.innerHTML = '<b>Found one.</b> ' + w.getAttribute('data-fix');
+          if (found === total) done.classList.add('show');
+        } else if (!w.classList.contains('miss')) {
+          w.classList.add('miss');
+          fb.className = 'spot-fb show warn';
+          fb.innerHTML = '<b>That one is fine.</b> ' + (w.getAttribute('data-ok') || 'Nothing here needs checking.');
+          setTimeout(function () { w.classList.remove('miss'); }, 1400);
+        }
+      }
+      w.addEventListener('click', hit);
+      w.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); hit(); } });
+    });
+  });
+
+  /* ---- prompt builder ---- */
+  var PB = window.__AIS_PB__;
+  var pb = root.querySelector('[data-pb]');
+  if (PB && pb) {
+    var picks = [null, null, null];
+    var out = pb.querySelector('.pb-out code');
+    var meter = pb.querySelector('.pb-meter i');
+    var note = pb.querySelector('.pb-note');
+    pb.querySelectorAll('.pb-chip').forEach(function (c) {
+      c.addEventListener('click', function () {
+        var r = +c.getAttribute('data-row'), n = +c.getAttribute('data-i');
+        picks[r] = n;
+        pb.querySelectorAll('.pb-chip[data-row="' + r + '"]').forEach(function (x) { x.classList.remove('on'); });
+        c.classList.add('on');
+        render();
+      });
+    });
+    function render() {
+      var parts = [], strong = 0, chosen = 0;
+      picks.forEach(function (p, r) {
+        if (p === null) return;
+        chosen++;
+        var o = PB.rows[r].options[p];
+        parts.push(o.text);
+        if (o.strong) strong++;
+      });
+      out.textContent = parts.length ? parts.join(', ') : 'Pick one from each row to build your prompt.';
+      meter.style.width = (strong / 3 * 100) + '%';
+      if (chosen < 3) { note.innerHTML = '<b>Keep going.</b> ' + PB.notes[0]; }
+      else { note.innerHTML = '<b>' + PB.levels[strong].t + '</b> ' + PB.levels[strong].d; }
+    }
+    render();
+  }
+
+  /* ---- quiz ---- */
+  var QUIZ = window.__AIS_QUIZ__;
+  var quizEl = document.getElementById('quiz');
+  if (QUIZ && quizEl) {
+    quizEl.innerHTML = QUIZ.map(function (item, n) {
+      return '<div class="q" data-q="' + n + '"><span class="qnum">QUESTION ' + (n + 1) + '</span>' +
+        '<h3>' + item.q + '</h3>' +
+        item.o.map(function (o, j) { return '<button class="opt" type="button" data-i="' + j + '">' + o + '</button>'; }).join('') +
+        '<div class="q-fb"></div></div>';
+    }).join('');
+    quizEl.querySelectorAll('.q').forEach(function (qEl) {
+      var idx = +qEl.getAttribute('data-q');
+      qEl.querySelectorAll('.opt').forEach(function (opt) {
+        opt.addEventListener('click', function () {
+          var pick = +opt.getAttribute('data-i');
+          qEl.querySelectorAll('.opt').forEach(function (o, j) {
+            o.disabled = true;
+            if (j === QUIZ[idx].c) o.classList.add('correct');
+            else if (j === pick) o.classList.add('incorrect');
+          });
+          var f = qEl.querySelector('.q-fb');
+          f.textContent = QUIZ[idx].fb; f.classList.add('show');
+        });
+      });
+    });
+  }
+})();
+
+</script>
+</body>
+</html>
