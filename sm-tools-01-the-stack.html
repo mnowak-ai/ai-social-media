@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Stack: How Social Media Professionals Use AI Tools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* AI ESSENTIALS - AI in Social Media - The Stack
+   Scoped under #ais-art for WordPress/Elementor safety */
+
+#ais-art *,#ais-art *::before,#ais-art *::after{box-sizing:border-box}
+#ais-art{
+  --purple:#7B2FBE;--purple-deep:#4A1A73;--purple-lift:#9B5DE0;
+  --wash:#F7F1FD;--wash-2:#EFE4FB;--edge:#E4D6F5;
+  --ink:#1A1125;--ink-soft:#574A66;--coral:#E0503C;--coral-wash:#FDF0EE;
+  --serif:'Fraunces',Georgia,serif;--sans:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono','Courier New',monospace;
+  background:#FFFFFF!important;color:var(--ink);font-family:var(--sans);
+  font-size:18px;line-height:1.72;-webkit-font-smoothing:antialiased;padding:0 24px 120px}
+#ais-art .ais-wrap{max-width:860px;margin:0 auto}
+#ais-art .reveal{opacity:0;transform:translateY(22px);
+  transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+#ais-art .reveal.is-in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){#ais-art .reveal{opacity:1!important;transform:none!important;transition:none!important}
+  #ais-art *{animation:none!important}}
+@keyframes aisFade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+#ais-art h1,#ais-art h2,#ais-art h3{font-family:var(--serif);color:var(--ink);font-weight:600;
+  line-height:1.14;margin:0;letter-spacing:-.015em}
+#ais-art h1{font-size:clamp(2.4rem,6vw,3.8rem);font-weight:700}
+#ais-art h2{font-size:clamp(1.75rem,4vw,2.3rem);margin-bottom:14px}
+#ais-art h3{font-size:1.22rem}
+#ais-art p{margin:0 0 22px;color:var(--ink-soft)}
+#ais-art p strong{color:var(--ink);font-weight:700}
+#ais-art .eyebrow{font-family:var(--mono);font-size:.74rem;font-weight:600;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--purple);display:block;margin-bottom:14px}
+#ais-art .lede{font-size:1.25rem;line-height:1.62;color:var(--ink)}
+
+#ais-art .hero{padding-top:56px}
+#ais-art .hero-rule{width:64px;height:5px;background:var(--purple);border-radius:3px;margin-bottom:26px}
+#ais-art .hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px;padding-top:26px;border-top:1px solid var(--edge)}
+#ais-art .chip{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;background:var(--wash);color:var(--purple-deep);
+  border:1px solid var(--edge);border-radius:100px;padding:7px 14px}
+#ais-art .chip.solid{background:var(--purple);color:#fff;border-color:var(--purple)}
+
+#ais-art .sec{margin-top:78px}
+#ais-art .pull{font-family:var(--serif);font-size:clamp(1.45rem,3.6vw,2rem);font-weight:600;
+  line-height:1.3;color:var(--purple-deep);border-left:4px solid var(--purple);
+  padding:6px 0 6px 28px;margin:48px 0}
+
+/* stack strip */
+#ais-art .stack{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:34px}
+#ais-art .st{border:1.5px solid var(--edge);border-radius:16px;padding:24px 20px;background:#fff}
+#ais-art .st-n{font-family:var(--mono);font-size:.68rem;font-weight:600;letter-spacing:.14em;
+  color:var(--purple);display:block;margin-bottom:9px}
+#ais-art .st h3{font-size:1.14rem;margin-bottom:7px}
+#ais-art .st .job{font-family:var(--mono);font-size:.74rem;font-weight:600;color:var(--purple-deep);
+  background:var(--wash-2);border-radius:6px;padding:3px 9px;display:inline-block;margin-bottom:12px}
+#ais-art .st p{font-size:.91rem;line-height:1.58;margin:0}
+
+/* tool section header */
+#ais-art .tool-head{border-top:3px solid var(--purple);padding-top:26px;margin-bottom:8px}
+#ais-art .tool-kicker{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--purple);display:block;margin-bottom:12px}
+
+/* use case list */
+#ais-art .uses{border:1.5px solid var(--edge);border-radius:18px;overflow:hidden;margin-top:30px}
+#ais-art .use{display:block;width:100%;text-align:left;font-family:var(--sans);background:#fff;
+  border:0;border-bottom:1px solid var(--edge);padding:19px 26px;cursor:pointer;transition:background .18s ease}
+#ais-art .use:last-child{border-bottom:0}
+#ais-art .use:hover{background:var(--wash)}
+#ais-art .use:focus-visible{outline:3px solid var(--purple);outline-offset:-3px}
+#ais-art .use-top{display:flex;align-items:center;gap:14px}
+#ais-art .use-n{font-family:var(--mono);font-size:.74rem;font-weight:600;color:var(--purple);flex:0 0 26px}
+#ais-art .use-name{font-family:var(--serif);font-size:1.06rem;font-weight:600;color:var(--ink);flex:1;line-height:1.3}
+#ais-art .use-plus{font-family:var(--mono);font-size:1.05rem;color:var(--purple);flex:0 0 auto;transition:transform .25s ease}
+#ais-art .use.open .use-plus{transform:rotate(45deg)}
+#ais-art .use-body{display:none;padding:14px 0 2px 40px}
+#ais-art .use.open .use-body{display:block;animation:aisFade .35s ease both}
+#ais-art .use-body p{font-size:.93rem;line-height:1.64;margin:0 0 12px}
+#ais-art .use-body p:last-child{margin-bottom:0}
+#ais-art .ulab{font-family:var(--mono);font-size:.67rem;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--purple);display:block;margin-bottom:3px}
+
+/* limits */
+#ais-art .limits{margin-top:28px}
+#ais-art .limit{display:grid;grid-template-columns:30px 1fr;gap:14px;padding:15px 0;
+  border-bottom:1px solid var(--edge);align-items:start}
+#ais-art .limit:first-child{border-top:1px solid var(--edge)}
+#ais-art .limit span.dot{font-family:var(--mono);font-size:.8rem;font-weight:600;color:var(--coral);padding-top:3px}
+#ais-art .limit div b{display:block;font-family:var(--sans);font-weight:700;color:var(--ink);font-size:.98rem;margin-bottom:2px}
+#ais-art .limit div span{font-size:.91rem;color:var(--ink-soft);line-height:1.55}
+
+/* facts */
+#ais-art .facts{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:32px}
+#ais-art .fact{background:var(--wash);border:1px solid var(--edge);border-radius:16px;padding:24px 22px}
+#ais-art .fact h3{font-size:1.02rem;margin-bottom:8px}
+#ais-art .fact p{font-size:.92rem;line-height:1.58;margin:0}
+#ais-art .srcnote{font-size:.85rem;color:var(--ink-soft);background:var(--wash);
+  border-left:3px solid var(--purple-lift);border-radius:0 10px 10px 0;padding:14px 18px;margin-top:20px;line-height:1.6}
+
+/* sim */
+#ais-art .sim{border:1.5px solid var(--edge);border-radius:20px;padding:32px;margin-top:34px;background:#fff}
+#ais-art .sim-bar{display:flex;gap:6px;margin-bottom:20px}
+#ais-art .sim-pip{flex:1;height:5px;border-radius:4px;background:var(--edge);transition:background .3s ease}
+#ais-art .sim-pip.done{background:var(--purple)}
+#ais-art .sim-count{font-family:var(--mono);font-size:.73rem;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-soft);display:block;margin-bottom:10px}
+#ais-art .sim-setup{font-family:var(--mono);font-size:.74rem;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--purple);display:block;margin-bottom:10px}
+#ais-art .sim-card{background:var(--wash);border:1px solid var(--edge);border-radius:14px;padding:26px 24px}
+#ais-art .sim-card p{margin:0;font-family:var(--serif);font-size:1.13rem;font-weight:500;color:var(--ink);line-height:1.42}
+#ais-art .sim-opts{margin-top:16px}
+#ais-art .sim-opt{display:block;width:100%;text-align:left;font-family:var(--sans);font-size:.96rem;
+  line-height:1.5;background:#fff;border:1.5px solid var(--edge);border-radius:12px;padding:15px 18px;
+  margin-bottom:10px;cursor:pointer;color:var(--ink);transition:border-color .18s ease,background .18s ease}
+#ais-art .sim-opt:hover:not(:disabled){border-color:var(--purple-lift);background:var(--wash)}
+#ais-art .sim-opt:focus-visible{outline:3px solid var(--purple);outline-offset:2px}
+#ais-art .sim-opt:disabled{cursor:default}
+#ais-art .sim-opt.correct{border-color:var(--purple);background:var(--wash);font-weight:700}
+#ais-art .sim-opt.incorrect{border-color:var(--coral);background:var(--coral-wash)}
+#ais-art .sim-fb{display:none;margin-top:14px;border-radius:12px;padding:17px 20px;font-size:.94rem;line-height:1.6}
+#ais-art .sim-fb.show{display:block;animation:aisFade .35s ease both}
+#ais-art .sim-fb.right{background:var(--wash);border-left:3px solid var(--purple);color:var(--ink-soft)}
+#ais-art .sim-fb.wrong{background:var(--coral-wash);border-left:3px solid var(--coral);color:var(--ink-soft)}
+#ais-art .sim-fb b{color:var(--ink)}
+#ais-art .sim-next{font-family:var(--sans);font-weight:700;font-size:.95rem;background:var(--ink);
+  color:#fff;border:0;border-radius:100px;padding:14px 30px;margin-top:16px;cursor:pointer;display:none}
+#ais-art .sim-next.show{display:inline-block}
+#ais-art .sim-next:focus-visible{outline:3px solid var(--purple);outline-offset:3px}
+#ais-art .sim-done{display:none;text-align:center;padding:10px 0}
+#ais-art .sim-done.show{display:block;animation:aisFade .5s ease both}
+#ais-art .sim-done .score{font-family:var(--serif);font-size:3.2rem;font-weight:700;color:var(--purple);line-height:1;display:block}
+#ais-art .sim-done p{margin:16px auto 0;max-width:480px}
+
+/* quiz */
+#ais-art .quiz{margin-top:34px}
+#ais-art .q{border:1.5px solid var(--edge);border-radius:16px;padding:26px;margin-bottom:16px}
+#ais-art .q .qnum{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.14em;
+  color:var(--purple);display:block;margin-bottom:10px}
+#ais-art .q h3{font-size:1.1rem;margin-bottom:18px;line-height:1.38}
+#ais-art .opt{display:block;width:100%;text-align:left;font-family:var(--sans);font-size:.96rem;line-height:1.5;
+  background:#fff;border:1.5px solid var(--edge);border-radius:11px;padding:14px 18px;margin-bottom:9px;
+  cursor:pointer;color:var(--ink);transition:border-color .18s ease,background .18s ease}
+#ais-art .opt:hover:not(:disabled){border-color:var(--purple-lift);background:var(--wash)}
+#ais-art .opt:focus-visible{outline:3px solid var(--purple);outline-offset:2px}
+#ais-art .opt:disabled{cursor:default}
+#ais-art .opt.correct{border-color:var(--purple);background:var(--wash);font-weight:700}
+#ais-art .opt.incorrect{border-color:var(--coral);background:var(--coral-wash)}
+#ais-art .q-fb{display:none;font-size:.92rem;line-height:1.6;color:var(--ink-soft);background:var(--wash);
+  border-radius:10px;padding:15px 18px;margin-top:12px}
+#ais-art .q-fb.show{display:block;animation:aisFade .35s ease both}
+
+#ais-art .closer{margin-top:74px;background:var(--wash);border-radius:22px;padding:46px 40px;text-align:center}
+#ais-art .closer p{max-width:560px;margin:0 auto;font-size:1.05rem}
+#ais-art .rule{font-family:var(--serif);font-size:clamp(1.45rem,3.4vw,1.95rem);font-weight:600;
+  color:var(--purple-deep);line-height:1.3;margin:0 auto 20px;max-width:620px}
+
+@media (max-width:700px){
+  #ais-art{font-size:17px;padding:0 18px 90px}
+  #ais-art .hero{padding-top:38px}
+  #ais-art .stack,#ais-art .facts{grid-template-columns:1fr}
+  #ais-art .sim{padding:22px}
+  #ais-art .use{padding:17px 20px}
+  #ais-art .use-body{padding-left:40px}
+  #ais-art .closer{padding:34px 24px}
+  #ais-art .pull{padding-left:20px;margin:38px 0}
+  #ais-art .sec{margin-top:60px}
+}
+
+</style>
+</head>
+<body>
+<div id="ais-art"><div class="ais-wrap">
+  <header class="hero">
+    <div class="hero-rule reveal"></div>
+    <span class="eyebrow reveal">AI in Social Media &middot; Tools in Practice</span>
+    <h1 class="reveal">The stack: how people actually work</h1>
+    <p class="lede reveal" style="margin-top:22px">Nobody working in this field uses one AI tool. They use a small set of them, each doing the one thing it does best, handing work to the next. This article walks through the three that show up most, and the specific jobs professionals give each one.</p>
+    <div class="hero-meta reveal">
+      <span class="chip solid">8 min read</span>
+      <span class="chip">15 use cases</span>
+      <span class="chip">4 situation simulation</span>
+    </div>
+  </header>
+
+  <section class="sec reveal">
+    <span class="eyebrow">The shape of it</span>
+    <h2>Three tools, three different jobs</h2>
+    <p>The reason these three appear together so often is that they barely overlap. One thinks and writes, one produces video without a shoot, and one produces everything else at volume. Work moves through them in roughly that order.</p>
+
+    <div class="stack">
+      <div class="st">
+        <span class="st-n">TOOL 01</span>
+        <h3>ChatGPT</h3>
+        <span class="job">Think and draft</span>
+        <p>Plans the calendar, drafts the words, reads the performance data, and pressure tests the idea before anyone spends money on it.</p>
+      </div>
+      <div class="st">
+        <span class="st-n">TOOL 02</span>
+        <h3>HeyGen</h3>
+        <span class="job">Video without a shoot</span>
+        <p>Turns a script into a presenter video, translates finished video into other languages, and animates a still photo into someone speaking.</p>
+      </div>
+      <div class="st">
+        <span class="st-n">TOOL 03</span>
+        <h3>Canva</h3>
+        <span class="job">Produce at volume</span>
+        <p>Designs the graphics, generates images that do not exist, resizes one design into every platform, and builds hundreds of variants from a spreadsheet.</p>
+      </div>
+    </div>
+
+    <p style="margin-top:30px">A typical week runs through all three. Monday is planning and drafting. Wednesday is design. Thursday is video. Friday the numbers go back into the first tool to plan the following week. The tools do not talk to each other automatically, which means the person moving work between them is doing something real.</p>
+  </section>
+
+  <p class="pull reveal">The tools handle production. The person handles anything with a fact or a face attached.</p>
+
+  <section class="sec reveal">
+    <div class="tool-head"><span class="tool-kicker">Tool 01</span><h2>ChatGPT</h2></div>
+    <p>Most people first meet this tool as a caption writer, which sells it short badly. In working teams it functions closer to an analyst and a thinking partner. It reads spreadsheets, finds patterns in performance data, argues against your ideas, and holds the brand voice so three different people can post to one account without sounding like three people.</p>
+    <p>Tap each use case below to see how it works and what it leaves for you.</p>
+      <div class="uses">
+        <button class="use" type="button">
+          <div class="use-top"><span class="use-n">01</span><span class="use-name">Turning last month's numbers into next month's plan</span><span class="use-plus">+</span></div>
+          <div class="use-body">
+            <p><span class="ulab">How it works in practice</span>A manager exports the post performance report as a spreadsheet, uploads it, and asks which topics earned saves and shares rather than just likes. The tool reads the file, groups the posts, and reports the pattern. From there it drafts a twelve post calendar built around whatever actually performed.</p>
+            <p><span class="ulab">The part that stays human</span>The tool sees the numbers and nothing else. It does not know that one post spiked because a local news station shared it, or that another flopped because it went out during a storm. You supply the context that explains the data.</p>
+          </div>
+        </button>
+        <button class="use" type="button">
+          <div class="use-top"><span class="use-n">02</span><span class="use-name">Building a custom assistant that holds the brand voice</span><span class="use-plus">+</span></div>
+          <div class="use-body">
+            <p><span class="ulab">How it works in practice</span>Instead of re-explaining the brand in every conversation, teams build a saved assistant loaded with their style guide, past posts that worked, words the brand never uses, and required disclaimers. Everyone on the team then drafts from the same starting point, which matters most when three people are posting for one account.</p>
+            <p><span class="ulab">The part that stays human</span>Someone has to decide what the brand voice actually is, and keep the assistant updated as it changes. A saved assistant makes a decision permanent, which is only good if the decision was right.</p>
+          </div>
+        </button>
+        <button class="use" type="button">
+          <div class="use-top"><span class="use-n">03</span><span class="use-name">Turning one piece into ten</span><span class="use-plus">+</span></div>
+          <div class="use-body">
+            <p><span class="ulab">How it works in practice</span>One long interview becomes a caption, a thread, three short video scripts, an email, and a set of quote cards. This is the highest volume use in most teams, because the hard work of having the idea already happened and reshaping it is what tools are genuinely good at.</p>
+            <p><span class="ulab">The part that stays human</span>Each platform has a different audience and a different set of conventions. Deciding which of the ten versions should actually ship, and which ones are just filling a calendar, is judgment.</p>
+          </div>
+        </button>
+        <button class="use" type="button">
+          <div class="use-top"><span class="use-n">04</span><span class="use-name">Drafting the replies you send over and over</span><span class="use-plus">+</span></div>
+          <div class="use-body">
+            <p><span class="ulab">How it works in practice</span>Community managers build a library of responses for the questions that arrive every week: shipping times, hours, sizing, eligibility, how to apply. The tool drafts twenty variations so the replies do not read as copy and paste.</p>
+            <p><span class="ulab">The part that stays human</span>The moment a message is emotional, personal, or about something that went wrong, the library gets closed and a person writes it. Templates are for routine questions only.</p>
+          </div>
+        </button>
+        <button class="use" type="button">
+          <div class="use-top"><span class="use-n">05</span><span class="use-name">Pressure testing an idea before it goes public</span><span class="use-plus">+</span></div>
+          <div class="use-body">
+            <p><span class="ulab">How it works in practice</span>Before a campaign launches, people ask the tool to argue against it, list how it could be misread, and name who might be offended. It is a cheap way to catch an obvious problem while it is still free to fix.</p>
+            <p><span class="ulab">The part that stays human</span>The tool produces a list of possible objections without knowing which ones are likely. You still decide which risks are real for your specific audience and which are noise.</p>
+          </div>
+        </button>
+      </div>
+  </section>
+
+  <section class="sec reveal">
+    <div class="tool-head"><span class="tool-kicker">Tool 02</span><h2>HeyGen</h2></div>
+    <p>This one solves a specific and expensive problem: video requires a person, a camera, a location, and a schedule where all three line up. HeyGen removes that requirement by generating a presenter from a script, or by taking finished video and reproducing it in another language with the speaker's mouth adjusted to match.</p>
+    <p>It is also the tool in this stack with the most serious ethical weight, because it produces synthetic versions of real human faces and voices. Every use below assumes consent and disclosure.</p>
+      <div class="uses">
+        <button class="use" type="button">
+          <div class="use-top"><span class="use-n">01</span><span class="use-name">One video becomes twelve languages</span><span class="use-plus">+</span></div>
+          <div class="use-body">
+            <p><span class="ulab">How it works in practice</span>This is the flagship use. A finished video is uploaded, and the tool produces versions in other languages where the audio is translated and the speaker's mouth is adjusted to match the new words. HeyGen supports translation and lip sync across a large number of languages and dialects, which turns a one day localization job into a short wait.</p>
+            <p><span class="ulab">The part that stays human</span>Translation accuracy is not the same as cultural fit. A word can be technically correct and still wrong for a specific community, which is why serious teams have a native speaker review every version before it publishes.</p>
+          </div>
+        </button>
+        <button class="use" type="button">
+          <div class="use-top"><span class="use-n">02</span><span class="use-name">A digital twin so the boss appears without filming</span><span class="use-plus">+</span></div>
+          <div class="use-body">
+            <p><span class="ulab">How it works in practice</span>A custom avatar is built from a short recording of a real person. After that, new videos are made by typing a script. Organizations use this for weekly updates from an executive who cannot get to a studio every week.</p>
+            <p><span class="ulab">The part that stays human</span>Consent is the whole ballgame. The person must agree to their likeness being used, know exactly what it will say, and approve each script. A digital twin without written permission is a serious problem, not a shortcut.</p>
+          </div>
+        </button>
+        <button class="use" type="button">
+          <div class="use-top"><span class="use-n">03</span><span class="use-name">Personalized outreach at real scale</span><span class="use-plus">+</span></div>
+          <div class="use-body">
+            <p><span class="ulab">How it works in practice</span>Sales and partnership teams generate hundreds of videos from one template, swapping in each recipient's name and company details automatically. One recording becomes three hundred videos that each open with the right name.</p>
+            <p><span class="ulab">The part that stays human</span>Personalization at scale reads as insulting the moment a detail is wrong. Somebody has to check the source list, because a video that greets the wrong company is worse than sending nothing.</p>
+          </div>
+        </button>
+        <button class="use" type="button">
+          <div class="use-top"><span class="use-n">04</span><span class="use-name">Turning a document or deck into a video</span><span class="use-plus">+</span></div>
+          <div class="use-body">
+            <p><span class="ulab">How it works in practice</span>A PDF, a slide deck, or pasted text goes in and a narrated video with captions and pacing comes out. Teams use this for training material and program explainers, where the information already exists in writing and nobody has time to film it.</p>
+            <p><span class="ulab">The part that stays human</span>A document that reads well often does not listen well. Sentences that work on a page can be too long or too dense for the ear, so the script usually needs rewriting rather than copying.</p>
+          </div>
+        </button>
+        <button class="use" type="button">
+          <div class="use-top"><span class="use-n">05</span><span class="use-name">Talking photos when there is no footage</span><span class="use-plus">+</span></div>
+          <div class="use-body">
+            <p><span class="ulab">How it works in practice</span>A single still image can be animated into a speaking avatar. This covers the case where somebody could not attend the shoot but their message still needs to go out.</p>
+            <p><span class="ulab">The part that stays human</span>This is the use with the highest chance of feeling dishonest to an audience. Label it clearly, and ask whether written text from that person would serve better than a synthetic version of their face.</p>
+          </div>
+        </button>
+      </div>
+  </section>
+
+  <section class="sec reveal">
+    <div class="tool-head"><span class="tool-kicker">Tool 03</span><h2>Canva</h2></div>
+    <p>Canva absorbed AI into a tool people were already using, which is why adoption was so fast. Its AI features sit under an umbrella name and cover image generation, writing, layout, background removal, resizing, and building designs in bulk from a spreadsheet.</p>
+    <p>The useful thing to understand is that most working teams ignore the majority of those features and rely heavily on about five. The ones below are the ones that come up over and over.</p>
+      <div class="uses">
+        <button class="use" type="button">
+          <div class="use-top"><span class="use-n">01</span><span class="use-name">One design becomes every platform size</span><span class="use-plus">+</span></div>
+          <div class="use-body">
+            <p><span class="ulab">How it works in practice</span>A single post is designed once, then automatically reformatted into the dimensions each platform needs. This is the least glamorous feature in the whole stack and the one working designers mention most, because resizing by hand is pure repetition with no creative content in it.</p>
+            <p><span class="ulab">The part that stays human</span>Automatic reformatting moves elements around, and text that fit perfectly in a square will sometimes collide with something in a vertical version. Every output still gets looked at.</p>
+          </div>
+        </button>
+        <button class="use" type="button">
+          <div class="use-top"><span class="use-n">02</span><span class="use-name">Two hundred graphics from one spreadsheet</span><span class="use-plus">+</span></div>
+          <div class="use-body">
+            <p><span class="ulab">How it works in practice</span>Bulk Create takes a spreadsheet of names, prices, dates, or product details and produces a matching design for every row. Teams use it for event series, class schedules, staff introductions, and product catalogs, where the layout is identical and only the words change.</p>
+            <p><span class="ulab">The part that stays human</span>The design is only as correct as the spreadsheet. One typo in a source file becomes two hundred graphics with the same typo, so the checking happens before you press the button, not after.</p>
+          </div>
+        </button>
+        <button class="use" type="button">
+          <div class="use-top"><span class="use-n">03</span><span class="use-name">Teaching the writing tool your actual voice</span><span class="use-plus">+</span></div>
+          <div class="use-body">
+            <p><span class="ulab">How it works in practice</span>Canva's writing assistant can be trained on samples of a brand's real writing so its drafts stop sounding generic. Practitioners recommend feeding it a substantial amount of genuine copy rather than a short description, because a description produces a description-shaped voice.</p>
+            <p><span class="ulab">The part that stays human</span>You have to choose which of your past writing actually represents the brand. Training on whatever happens to be lying around teaches the tool your worst habits alongside your best ones.</p>
+          </div>
+        </button>
+        <button class="use" type="button">
+          <div class="use-top"><span class="use-n">04</span><span class="use-name">Generating an image when no photo exists</span><span class="use-plus">+</span></div>
+          <div class="use-body">
+            <p><span class="ulab">How it works in practice</span>Dream Lab produces images from a written description, which covers the cases where a photo shoot is impossible: an abstract concept, a service rather than an object, or a scene nobody can go photograph. It also reduces the reliance on stock photos that everyone else is also using.</p>
+            <p><span class="ulab">The part that stays human</span>Generated images still need disclosure in many contexts, and they carry the default look these tools produce unless the description is specific. Checking hands, counts, and any text inside the image is non negotiable.</p>
+          </div>
+        </button>
+        <button class="use" type="button">
+          <div class="use-top"><span class="use-n">05</span><span class="use-name">Setting up a brand kit so every tool stays on brand</span><span class="use-plus">+</span></div>
+          <div class="use-body">
+            <p><span class="ulab">How it works in practice</span>Logos, colors, fonts, and voice guidelines are stored once, and the AI features then pull from them automatically. Teams that skip this step get output that looks like it came from a tool, because it did.</p>
+            <p><span class="ulab">The part that stays human</span>Somebody has to build the brand kit in the first place, and keep it current. This is a one time setup that determines the quality of everything the tools produce afterward, and it is the step most people skip.</p>
+          </div>
+        </button>
+      </div>
+  </section>
+
+  <section class="sec reveal">
+    <span class="eyebrow">Activity &middot; Four situations</span>
+    <h2>Use the stack</h2>
+    <p>Four moments from a normal month where the tool did its job correctly and left a decision on your desk.</p>
+    <div class="sim" data-sim="stack">
+      <span class="sim-count"></span>
+      <div class="sim-bar"></div>
+      <div class="sim-play">
+        <span class="sim-setup"></span>
+        <div class="sim-card"></div>
+        <div class="sim-opts"></div>
+        <div class="sim-fb"></div>
+        <button class="sim-next" type="button">Next</button>
+      </div>
+      <div class="sim-done"><span class="score">0 / 4</span><p class="sim-msg"></p></div>
+    </div>
+  </section>
+
+  <section class="sec reveal">
+    <span class="eyebrow">Practical notes</span>
+    <h2>Four things worth knowing before you start</h2>
+
+    <div class="facts">
+      <div class="fact"><h3>Free tiers are real but small</h3><p>All three have free levels that are genuinely enough to learn on. They cap the expensive features, especially video generation and translation minutes, which is where costs concentrate.</p></div>
+      <div class="fact"><h3>Video pricing works on credits</h3><p>Video tools often charge a flat subscription and then meter the advanced features separately. Reading how the credits work before committing avoids running dry halfway through a month.</p></div>
+      <div class="fact"><h3>Setup beats settings</h3><p>An hour spent building a brand kit and training a brand voice improves every output afterward, far more than any individual prompt trick will.</p></div>
+      <div class="fact"><h3>Vendor numbers are marketing</h3><p>Every one of these companies publishes research showing their tool saves enormous time. Treat those figures as advertising, not evidence, and measure your own results.</p></div>
+    </div>
+
+    <p class="srcnote">Features and pricing on all three platforms change frequently, sometimes monthly. Anything specific in this article is worth confirming on the vendor's own site before you build a budget around it.</p>
+  </section>
+
+  <section class="sec reveal">
+    <span class="eyebrow">The honest version</span>
+    <h2>What the tools do not do</h2>
+    <p>Every one of these platforms markets itself as replacing hours of work. The accurate version is that they get you most of the way to a first draft, quickly, and the remaining distance is where the job now lives.</p>
+      <div class="limits">
+        <div class="limit"><span class="dot">01</span><div><b>Finish anything</b><span>Independent testing of these tools consistently lands on the same conclusion: they produce a strong starting point and not a finished product. The last stretch is manual and it is where quality is decided.</span></div></div>
+        <div class="limit"><span class="dot">02</span><div><b>Know your audience</b><span>None of them have any idea who follows you, what happened at your organization last month, or which words your community actually uses. You supply all of that.</span></div></div>
+        <div class="limit"><span class="dot">03</span><div><b>Tell you when they are guessing</b><span>There is no signal in the output that distinguishes a sourced fact from an invented one. The tone is identical, which is exactly why the checking has to be a habit rather than a reaction.</span></div></div>
+        <div class="limit"><span class="dot">04</span><div><b>Get permission</b><span>A tool will happily generate a video of someone who never agreed to it. Consent is a human process and no feature replaces it.</span></div></div>
+        <div class="limit"><span class="dot">05</span><div><b>Keep you consistent</b><span>Every generation is independent, so nothing stays on brand by accident. Consistency is now something you actively maintain rather than something you get for free.</span></div></div>
+      </div>
+  </section>
+
+  <section class="sec reveal">
+    <span class="eyebrow">Knowledge check</span>
+    <h2>Three quick questions</h2>
+    <p>Check the main ideas before you go build your own stack.</p>
+    <div class="quiz" id="quiz"></div>
+  </section>
+
+  <section class="closer reveal">
+    <span class="eyebrow">Take this with you</span>
+    <p class="rule">Learn the stack, not the app. Tools get replaced. The workflow does not.</p>
+    <p>The three tools in this article will look different in a year and some may be gone. What will not change is the shape of the work: something plans, something produces, something measures, and a person is responsible for every claim and every face that goes out the door.</p>
+  </section>
+</div></div>
+<script>
+window.__AIS_SIMS__ = {"stack": {"unit": "Situation", "yes": "Right call.", "no": "That is the costly path.", "hi": "You are using the tools the way experienced people do: fast on the production, slow on anything with a person or a fact attached.", "lo": "Worth another pass. In every situation, the stronger answer slowed down at exactly the point where a real person or a real claim was involved.", "rounds": [{"setup": "Situation 1 &middot; HeyGen", "prompt": "Your director approved a message in writing but could not record it. You have their digital twin, so you generate the video with their avatar delivering the approved words.", "options": [{"label": "Post it as a normal video from the director", "right": false, "fb": "The words were approved, but viewers will believe they watched the director speak, and they did not. That gap is what disclosure exists to close, and being caught later costs far more than labeling it now."}, {"label": "Post it with a clear note that the video uses an AI avatar", "right": true, "fb": "The message is real, the approval is real, and the audience knows what they are watching. This is the version that survives someone finding out, which is the only test that matters."}, {"label": "Skip the video and post the message as text", "right": false, "fb": "Not wrong, just unnecessarily cautious. With consent and a clear label, the video is legitimate, and throwing away a working format costs you reach for no gain."}]}, {"setup": "Situation 2 &middot; ChatGPT", "prompt": "You asked for a caption about your program and it produced a strong one containing the line: graduates see a 31 percent increase in starting pay.", "options": [{"label": "Post it, since specific numbers make a caption stronger", "right": false, "fb": "The number did not come from your records. It came from a tool predicting what a sentence like that usually says. Publishing an invented figure about outcomes is the fastest way to lose an audience and attract a complaint."}, {"label": "Check it against your own records and cut it if you cannot source it", "right": true, "fb": "Every statistic in AI output needs a real source before it goes out. If your records support a different number, use that one. If they support nothing, the sentence goes."}, {"label": "Soften it to say a significant increase", "right": false, "fb": "Vaguer wording does not make an unsupported claim acceptable. You have hidden the problem rather than solved it, and a significant increase is still a claim somebody can ask you to prove."}]}, {"setup": "Situation 3 &middot; Canva", "prompt": "The writing assistant keeps producing captions that are grammatically fine but sound nothing like your brand. You are rewriting every single draft by hand.", "options": [{"label": "Keep rewriting, since that is just what the work is", "right": false, "fb": "You are paying the same editing cost every time for a problem you could fix once. This is the most common way people waste the time these tools were supposed to save."}, {"label": "Train the brand voice on a real sample of your best past writing", "right": true, "fb": "Setting up the voice once changes every draft that follows. The setup work feels like a detour and is actually the highest return hour in the whole stack."}, {"label": "Switch to a different writing tool", "right": false, "fb": "Any tool will sound generic if you never tell it what you sound like. You would move the same problem to a new place and start over."}]}, {"setup": "Situation 4 &middot; HeyGen", "prompt": "Your Spanish version came back fast and the lip sync looks clean. A colleague mentions that one word is technically correct but is not the word your local community actually uses.", "options": [{"label": "Publish it, since the translation is technically accurate", "right": false, "fb": "Technically correct and locally wrong is a real category, and audiences hear it immediately. It signals that the message was processed rather than written for them."}, {"label": "Have a native speaker from that community review before publishing", "right": true, "fb": "Translation tools handle the language and not the community. Building a review step into the process is what separates teams who localize well from teams who just translate."}, {"label": "Publish it and fix the word if anyone complains", "right": false, "fb": "By the time someone complains, the impression is already made. The people most likely to notice are exactly the audience the version was made for."}]}]}};
+window.__AIS_QUIZ__ = [{"q": "What is the most common reason AI writing tools produce generic, off brand output?", "o": ["The free versions are limited on purpose", "Nobody set up a brand voice or brand kit first", "The tools work better for long form than short form"], "c": 1, "fb": "These tools default to an average voice when they have not been told what yours is. Setting up brand assets and voice once is the step that changes every draft afterward, and it is the step most people skip."}, {"q": "A team wants to use an AI avatar of their director in a weekly video. What has to be true first?", "o": ["The director gave permission, approves each script, and the video is labeled", "The video is under sixty seconds", "The avatar looks realistic enough to be convincing"], "c": 0, "fb": "Consent, script approval, and disclosure are the three requirements. Realism is not the issue. In fact the more convincing the avatar is, the more the label matters."}, {"q": "Where does the biggest risk sit across all three tools?", "o": ["Running out of credits mid month", "Publishing a fact, figure, or likeness that a person never verified", "Choosing the wrong subscription plan"], "c": 1, "fb": "Cost and plan problems are annoying. An invented statistic or an unapproved likeness is the kind of mistake that damages trust and can carry legal weight, and it is the mistake these tools make easiest."}];
+
+(function(){
+  var root=document.getElementById('ais-art'); if(!root) return;
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var items=root.querySelectorAll('.reveal');
+  if(reduce||!('IntersectionObserver' in window)){items.forEach(function(el){el.classList.add('is-in')})}
+  else{var obs=new IntersectionObserver(function(en){en.forEach(function(e){
+    if(e.isIntersecting){e.target.classList.add('is-in');obs.unobserve(e.target)}})},
+    {threshold:.12,rootMargin:'0px 0px -60px 0px'});items.forEach(function(el){obs.observe(el)})}
+
+  root.querySelectorAll('.use').forEach(function(u){
+    u.setAttribute('aria-expanded','false');
+    u.addEventListener('click',function(){var o=u.classList.toggle('open');
+      u.setAttribute('aria-expanded',o?'true':'false')})});
+
+  var SIMS=window.__AIS_SIMS__||{};
+  root.querySelectorAll('[data-sim]').forEach(function(box){
+    var cfg=SIMS[box.getAttribute('data-sim')]; if(!cfg) return;
+    var rounds=cfg.rounds,i=0,score=0,$=function(s){return box.querySelector(s)};
+    var bar=$('.sim-bar'),cnt=$('.sim-count'),setup=$('.sim-setup'),card=$('.sim-card'),
+        opts=$('.sim-opts'),fb=$('.sim-fb'),next=$('.sim-next'),play=$('.sim-play'),done=$('.sim-done');
+    bar.innerHTML=rounds.map(function(){return '<span class="sim-pip"></span>'}).join('');
+    var pips=bar.querySelectorAll('.sim-pip');
+    function load(){var r=rounds[i];
+      setup.textContent=r.setup||''; card.innerHTML='<p>'+r.prompt+'</p>';
+      cnt.textContent=(cfg.unit||'Round')+' '+(i+1)+' of '+rounds.length;
+      fb.className='sim-fb'; next.className='sim-next';
+      opts.innerHTML=r.options.map(function(o,j){
+        return '<button class="sim-opt" type="button" data-i="'+j+'">'+o.label+'</button>'}).join('');
+      opts.querySelectorAll('.sim-opt').forEach(function(b){
+        b.addEventListener('click',function(){
+          var pick=+b.getAttribute('data-i'),r2=rounds[i],right=!!r2.options[pick].right;
+          if(right) score++;
+          pips[i].classList.add('done');
+          opts.querySelectorAll('.sim-opt').forEach(function(x,j){x.disabled=true;
+            if(r2.options[j].right) x.classList.add('correct');
+            else if(j===pick) x.classList.add('incorrect')});
+          fb.className='sim-fb show '+(right?'right':'wrong');
+          fb.innerHTML='<b>'+(right?(cfg.yes||'Good call.'):(cfg.no||'Not the strongest move.'))+'</b> '+r2.options[pick].fb;
+          next.textContent=(i===rounds.length-1)?'See your result':'Next situation';
+          next.className='sim-next show'})})}
+    next.addEventListener('click',function(){i++;
+      if(i>=rounds.length){play.style.display='none';cnt.textContent='Complete';
+        box.querySelector('.score').textContent=score+' / '+rounds.length;
+        box.querySelector('.sim-msg').textContent=(score>=rounds.length-1)?cfg.hi:cfg.lo;
+        done.classList.add('show');return}
+      load()});
+    load()});
+
+  var QUIZ=window.__AIS_QUIZ__,quizEl=document.getElementById('quiz');
+  if(QUIZ&&quizEl){
+    quizEl.innerHTML=QUIZ.map(function(item,n){
+      return '<div class="q" data-q="'+n+'"><span class="qnum">QUESTION '+(n+1)+'</span><h3>'+item.q+'</h3>'+
+        item.o.map(function(o,j){return '<button class="opt" type="button" data-i="'+j+'">'+o+'</button>'}).join('')+
+        '<div class="q-fb"></div></div>'}).join('');
+    quizEl.querySelectorAll('.q').forEach(function(qEl){
+      var idx=+qEl.getAttribute('data-q');
+      qEl.querySelectorAll('.opt').forEach(function(opt){
+        opt.addEventListener('click',function(){
+          var pick=+opt.getAttribute('data-i');
+          qEl.querySelectorAll('.opt').forEach(function(o,j){o.disabled=true;
+            if(j===QUIZ[idx].c) o.classList.add('correct');
+            else if(j===pick) o.classList.add('incorrect')});
+          var f=qEl.querySelector('.q-fb');f.textContent=QUIZ[idx].fb;f.classList.add('show')})})})}
+})();
+
+</script>
+</body>
+</html>
