@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studio Session: The Thank You Track | AI in Music Certification</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --purple:#7B2FBE; --purple-dark:#5A1F8E; --purple-deep:#3D1163; --purple-light:#F3EAFB; --purple-mid:#E2CFF5;
+  --ink:#1A1523; --gray:#5C5566; --gray-light:#F7F5FA; --line:#EAE4F2;
+  --green:#1E8A5A; --green-light:#E7F6EF;
+  --red:#C0392B; --red-light:#FBEDEB;
+  --gold:#B07D2B; --gold-bright:#D9A441; --gold-light:#FBF3E3;
+  --console:#241A33;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:#FFF;color:var(--ink);line-height:1.7;font-size:17px;}
+.wrap{max-width:860px;margin:0 auto;padding:0 24px 120px;}
+button{font-family:inherit;cursor:pointer;}
+input,textarea,select{font-family:inherit;font-size:16px;color:var(--ink);}
+.fade{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease;}
+.fade.visible{opacity:1;transform:translateY(0);}
+@media (prefers-reduced-motion: reduce){
+  .fade{opacity:1;transform:none;transition:none;}
+  *,*::before,*::after{animation:none !important;transition:none !important;}
+}
+:focus-visible{outline:3px solid var(--purple);outline-offset:2px;border-radius:4px;}
+
+/* ============ HERO ============ */
+.hero{padding-top:72px;text-align:left;}
+.cap-badge{
+  display:inline-flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:#fff;
+  background:linear-gradient(100deg,#E08B3E,#C96A28);border-radius:999px;padding:8px 18px;margin-bottom:18px;
+}
+h1{font-family:'Fraunces',serif;font-size:clamp(34px,6.4vw,54px);font-weight:700;line-height:1.1;letter-spacing:-.01em;margin-bottom:16px;}
+h1 .accent{color:var(--purple);font-style:italic;}
+.lede{font-size:19px;color:var(--gray);max-width:640px;margin-bottom:8px;}
+.session-for{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--purple);margin-top:10px;min-height:22px;font-weight:600;}
+
+/* ============ CONSOLE (sticky mixing board) ============ */
+.console-shell{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,var(--console),#1B1226);box-shadow:0 6px 24px rgba(26,21,35,.35);margin:40px -24px 0;padding:14px 24px 12px;}
+.console-inner{max-width:812px;margin:0 auto;}
+.console-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.console-label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#B9A8D6;font-weight:600;}
+.rec-light{display:flex;align-items:center;gap:7px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#E8DFF6;font-weight:600;}
+.rec-dot{width:10px;height:10px;border-radius:50%;background:#E5533C;animation:blink 1.6s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.rec-dot.done{background:#3CCB7F;animation:none;}
+.channels{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+.channel{background:#2E2242;border:1px solid #453460;border-radius:10px;padding:8px 6px 10px;text-align:center;position:relative;transition:background .4s,border-color .4s,transform .3s;}
+.channel .ch-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:#8F7DB3;letter-spacing:.1em;}
+.channel .ch-name{font-size:11.5px;color:#D8CCEE;font-weight:500;line-height:1.3;margin-top:2px;}
+.channel .fader-track{width:6px;height:34px;background:#1B1226;border-radius:3px;margin:8px auto 0;position:relative;overflow:hidden;}
+.channel .fader-fill{position:absolute;bottom:0;left:0;width:100%;height:0%;background:linear-gradient(180deg,var(--gold-bright),var(--purple));border-radius:3px;transition:height .8s cubic-bezier(.34,1.4,.5,1);}
+.channel.on{background:#3A2A57;border-color:var(--gold-bright);transform:translateY(-2px);}
+.channel.on .fader-fill{height:100%;}
+.channel.on .ch-name{color:#fff;}
+.channel .ch-led{width:7px;height:7px;border-radius:50%;background:#4A3868;margin:6px auto 0;transition:background .4s,box-shadow .4s;}
+.channel.on .ch-led{background:#3CCB7F;box-shadow:0 0 8px #3CCB7F;}
+@media(max-width:560px){
+  .channel .ch-name{display:none;}
+  .channel .fader-track{height:22px;}
+}
+
+/* ============ STATIONS ============ */
+.station{margin-top:64px;border:2px solid var(--line);border-radius:20px;overflow:hidden;transition:border-color .5s, box-shadow .5s;}
+.station.unlocked{border-color:var(--purple-mid);box-shadow:0 10px 34px rgba(123,47,190,.08);}
+.station.completed{border-color:var(--green);}
+.station-head{display:flex;align-items:center;gap:16px;padding:22px 26px;background:var(--gray-light);border-bottom:1px solid var(--line);}
+.station.unlocked .station-head{background:var(--purple-light);}
+.station.completed .station-head{background:var(--green-light);}
+.st-light{width:16px;height:16px;border-radius:50%;background:#C9C1D6;flex-shrink:0;position:relative;transition:background .5s;}
+.station.unlocked .st-light{background:#E5533C;box-shadow:0 0 10px rgba(229,83,60,.55);animation:blink 1.8s infinite;}
+.station.completed .st-light{background:#2FB877;box-shadow:0 0 10px rgba(47,184,119,.55);animation:none;}
+.st-meta{flex:1;}
+.st-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gray);font-weight:600;}
+.station.unlocked .st-eyebrow{color:var(--purple);}
+.st-title{font-family:'Fraunces',serif;font-size:24px;font-weight:700;line-height:1.2;}
+.st-lock{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--gray);display:flex;align-items:center;gap:6px;}
+.station-body{padding:28px 26px 34px;display:none;}
+.station.unlocked .station-body{display:block;animation:bodyIn .6s ease;}
+@keyframes bodyIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.station.locked .station-body{display:none;}
+.st-prompt{font-size:17.5px;margin-bottom:22px;max-width:640px;}
+.st-prompt strong{color:var(--purple-dark);}
+
+/* ============ STATION 1: card wall ============ */
+.card-wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:26px;}
+.who-card{perspective:900px;height:120px;background:none;border:none;padding:0;text-align:inherit;}
+.who-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d;}
+.who-card.flipped .who-inner{transform:rotateY(180deg);}
+.who-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px;}
+.who-front{background:#fff;border:2px solid var(--purple-mid);font-weight:700;font-size:16px;color:var(--purple-dark);}
+.who-front .emoji{font-size:26px;}
+.who-back{background:var(--purple);color:#fff;transform:rotateY(180deg);font-size:13px;line-height:1.45;text-align:center;font-style:italic;}
+.who-card.selected .who-front{border-color:var(--gold-bright);background:var(--gold-light);}
+.name-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;background:var(--purple-light);border-radius:14px;padding:18px 20px;}
+.name-row label{font-weight:700;font-size:15px;}
+.name-row input{flex:1;min-width:200px;border:2px solid var(--purple-mid);border-radius:10px;padding:11px 14px;background:#fff;}
+.name-row input:focus{border-color:var(--purple);outline:none;}
+
+/* ============ station action button ============ */
+.st-btn{display:inline-flex;align-items:center;gap:9px;background:var(--purple);color:#fff;border:none;border-radius:999px;padding:13px 28px;font-size:16px;font-weight:700;margin-top:24px;transition:background .25s, transform .2s, opacity .25s;}
+.st-btn:hover:not(:disabled){background:var(--purple-dark);transform:translateY(-1px);}
+.st-btn:disabled{opacity:.4;cursor:not-allowed;}
+.st-hint{font-size:13.5px;color:var(--gray);margin-top:10px;}
+
+/* ============ STATION 2: gold records ============ */
+.records{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;}
+.record-slot{border:2px dashed var(--purple-mid);border-radius:16px;padding:20px 18px 22px;text-align:center;transition:border-color .4s, background .4s;}
+.record-slot.gold{border-style:solid;border-color:var(--gold-bright);background:var(--gold-light);}
+.vinyl{width:92px;height:92px;border-radius:50%;margin:0 auto 12px;position:relative;background:repeating-radial-gradient(circle at 50% 50%, #2A2135 0 2px, #38304A 2px 4px);transition:background .6s, box-shadow .6s;}
+.vinyl::after{content:'';position:absolute;inset:34px;border-radius:50%;background:var(--purple);transition:background .6s;}
+.record-slot.gold .vinyl{background:repeating-radial-gradient(circle at 50% 50%, #C99A3B 0 2px, #E7C670 2px 4px);box-shadow:0 6px 18px rgba(217,164,65,.45);}
+.record-slot.gold .vinyl::after{background:var(--gold);}
+.record-slot.gold .vinyl{animation:spin 7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.rec-label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);font-weight:600;margin-bottom:8px;}
+.rec-starter{font-size:14px;font-style:italic;color:var(--purple-dark);margin-bottom:10px;min-height:44px;}
+.record-slot textarea{width:100%;min-height:84px;border:2px solid var(--line);border-radius:10px;padding:10px 12px;resize:vertical;line-height:1.5;background:#fff;}
+.record-slot textarea:focus{border-color:var(--purple);outline:none;}
+.spec-meter{height:8px;background:var(--gray-light);border-radius:4px;margin-top:10px;overflow:hidden;}
+.spec-fill{height:100%;width:0%;border-radius:4px;background:linear-gradient(90deg,#E5533C,var(--gold-bright),var(--green));transition:width .4s;}
+.spec-note{font-size:12.5px;margin-top:6px;color:var(--gray);min-height:18px;}
+.spec-note.good{color:var(--green);font-weight:700;}
+.spec-note.warn{color:var(--red);}
+
+/* ============ STATION 3: genre ============ */
+.feel-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:26px;}
+.feel-chip{border:2px solid var(--purple-mid);background:#fff;border-radius:999px;padding:10px 20px;font-size:15px;font-weight:500;transition:all .25s;}
+.feel-chip:hover{border-color:var(--purple);}
+.feel-chip.active{background:var(--purple);color:#fff;border-color:var(--purple);}
+.genre-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;}
+.genre-card{border:2px solid var(--line);border-radius:16px;padding:18px 16px 16px;background:#fff;text-align:left;transition:all .3s;position:relative;}
+.genre-card:hover{border-color:var(--purple-mid);transform:translateY(-2px);}
+.genre-card.picked{border-color:var(--purple);background:var(--purple-light);box-shadow:0 8px 22px rgba(123,47,190,.14);}
+.genre-card.suggested::before{content:'suggested for your vibe';position:absolute;top:-11px;left:12px;background:var(--gold-bright);color:#3D2A08;font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:999px;}
+.genre-name{font-family:'Fraunces',serif;font-weight:700;font-size:19px;margin-bottom:2px;}
+.genre-mood{font-size:13px;color:var(--gray);line-height:1.45;margin-bottom:12px;min-height:38px;}
+.waveform{display:flex;align-items:flex-end;gap:3px;height:34px;}
+.waveform span{flex:1;background:var(--purple-mid);border-radius:2px;height:20%;}
+.genre-card.picked .waveform span, .genre-card:hover .waveform span{background:var(--purple);animation:wave 1s ease-in-out infinite;}
+.genre-card.picked .waveform span:nth-child(odd), .genre-card:hover .waveform span:nth-child(odd){animation-delay:.15s;}
+.genre-card.picked .waveform span:nth-child(3n), .genre-card:hover .waveform span:nth-child(3n){animation-delay:.3s;}
+@keyframes wave{0%,100%{height:18%}50%{height:95%}}
+
+/* ============ STATION 4: lyric lab ============ */
+.lyric-block{border:2px solid var(--line);border-radius:16px;padding:20px;margin-bottom:18px;background:#fff;transition:border-color .4s;}
+.lyric-block.locked-in{border-color:var(--green);background:var(--green-light);}
+.lyric-src{font-size:14px;background:var(--gold-light);border-left:4px solid var(--gold-bright);border-radius:0 10px 10px 0;padding:10px 14px;margin-bottom:14px;font-style:italic;color:#4A3A15;}
+.lyric-src b{font-style:normal;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:3px;color:var(--gold);}
+.lyric-block textarea{width:100%;min-height:74px;border:2px solid var(--line);border-radius:10px;padding:10px 12px;resize:vertical;line-height:1.6;background:#fff;}
+.lyric-block textarea:focus{border-color:var(--purple);outline:none;}
+.lyric-block textarea.ai-draft{background:var(--gray-light);color:var(--gray);border-style:dashed;}
+.lyric-tools{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;align-items:center;}
+.mini-btn{border:2px solid var(--purple-mid);background:#fff;color:var(--purple-dark);border-radius:999px;padding:8px 16px;font-size:13.5px;font-weight:700;transition:all .25s;}
+.mini-btn:hover:not(:disabled){border-color:var(--purple);background:var(--purple-light);}
+.mini-btn:disabled{opacity:.45;cursor:not-allowed;}
+.ai-flag{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--red);font-weight:600;letter-spacing:.05em;display:none;}
+.ai-flag.show{display:inline;}
+.lock-flag{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--green);font-weight:600;letter-spacing:.05em;display:none;}
+.lock-flag.show{display:inline;}
+.golden-rule{background:var(--purple-light);border-radius:14px;padding:16px 20px;font-size:14.5px;margin-bottom:24px;}
+.golden-rule b{color:var(--purple-dark);}
+
+/* ============ STATION 5: master ============ */
+.prompt-card{background:var(--console);border-radius:18px;padding:26px 24px;color:#EFE9F8;margin-bottom:26px;}
+.prompt-card h3{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-bright);margin-bottom:14px;font-weight:600;}
+.prompt-text{font-family:'IBM Plex Mono',monospace;font-size:14px;line-height:1.75;white-space:pre-wrap;background:#1B1226;border-radius:12px;padding:18px;border:1px solid #453460;}
+.copy-btn{display:inline-flex;align-items:center;gap:8px;background:var(--gold-bright);color:#2A1D06;border:none;border-radius:999px;padding:11px 24px;font-size:15px;font-weight:700;margin-top:16px;transition:transform .2s, background .25s;}
+.copy-btn:hover{background:#E8B75B;transform:translateY(-1px);}
+.checklist{list-style:none;margin-bottom:26px;}
+.checklist li{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line);font-size:15.5px;}
+.checklist .n{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--purple);font-size:13px;background:var(--purple-light);border-radius:8px;padding:3px 9px;flex-shrink:0;margin-top:2px;}
+.delivery{background:var(--purple-light);border-radius:16px;padding:22px;margin-bottom:26px;}
+.delivery h3{font-family:'Fraunces',serif;font-size:21px;margin-bottom:8px;}
+.delivery p{font-size:15px;margin-bottom:14px;color:var(--gray);}
+.delivery select,.delivery input{width:100%;border:2px solid var(--purple-mid);border-radius:10px;padding:11px 13px;background:#fff;margin-bottom:12px;}
+.liner{border:3px double var(--gold-bright);border-radius:16px;padding:26px;background:linear-gradient(160deg,#FFFDF7,var(--gold-light));text-align:center;}
+.liner .l-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:10px;}
+.liner h3{font-family:'Fraunces',serif;font-size:28px;font-style:italic;margin-bottom:4px;}
+.liner .ded{font-size:15px;color:var(--gray);margin-bottom:16px;}
+.liner .reasons{text-align:left;max-width:460px;margin:0 auto 16px;font-size:14.5px;}
+.liner .reasons li{margin-bottom:6px;}
+.liner .sig{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--gold);letter-spacing:.08em;}
+.finale{display:none;text-align:center;margin-top:70px;}
+.finale.show{display:block;}
+.finale h2{font-family:'Fraunces',serif;font-size:clamp(30px,5vw,42px);font-weight:700;margin-bottom:12px;}
+.finale p{color:var(--gray);max-width:560px;margin:0 auto;}
+.confetti{position:fixed;top:-12px;border-radius:2px;z-index:200;pointer-events:none;animation:fall linear forwards;}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.9}}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="cap-badge">◉ Capstone · Studio Session</div>
+    <h1>The <span class="accent">Thank You Track</span><br>Recording Session</h1>
+    <p class="lede">Someone believed in you. Today, you're walking into the studio to turn that into a real song — one station at a time. Finish a station, and the next one unlocks.</p>
+    <div class="session-for" id="sessionFor"></div>
+  </header>
+
+  <!-- CONSOLE -->
+  <div class="console-shell" role="region" aria-label="Session progress">
+    <div class="console-inner">
+      <div class="console-top">
+        <span class="console-label">Session Console</span>
+        <span class="rec-light"><span class="rec-dot" id="recDot"></span><span id="recText">REC</span></span>
+      </div>
+      <div class="channels">
+        <div class="channel" id="ch1"><div class="ch-num">CH 1</div><div class="ch-name">Your Person</div><div class="fader-track"><div class="fader-fill"></div></div><div class="ch-led"></div></div>
+        <div class="channel" id="ch2"><div class="ch-num">CH 2</div><div class="ch-name">Three Reasons</div><div class="fader-track"><div class="fader-fill"></div></div><div class="ch-led"></div></div>
+        <div class="channel" id="ch3"><div class="ch-num">CH 3</div><div class="ch-name">Your Sound</div><div class="fader-track"><div class="fader-fill"></div></div><div class="ch-led"></div></div>
+        <div class="channel" id="ch4"><div class="ch-num">CH 4</div><div class="ch-name">Lyric Lab</div><div class="fader-track"><div class="fader-fill"></div></div><div class="ch-led"></div></div>
+        <div class="channel" id="ch5"><div class="ch-num">CH 5</div><div class="ch-name">Master It</div><div class="fader-track"><div class="fader-fill"></div></div><div class="ch-led"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ STATION 1 ============ -->
+  <section class="station unlocked fade" id="st1">
+    <div class="station-head">
+      <div class="st-light" aria-hidden="true"></div>
+      <div class="st-meta">
+        <div class="st-eyebrow">Station 1 · Recording</div>
+        <div class="st-title">Who's in your corner?</div>
+      </div>
+    </div>
+    <div class="station-body">
+      <p class="st-prompt">Every great song starts with a real person. Tap a card to flip it — behind each one is a question to help you think. Then <strong>pick the card</strong> that fits your person best.</p>
+      <div class="card-wall" id="cardWall">
+        <button class="who-card" data-who="Teacher"><div class="who-inner"><div class="who-face who-front"><span class="emoji">📚</span>Teacher</div><div class="who-face who-back">"Who saw something in you before you saw it yourself?"</div></div></button>
+        <button class="who-card" data-who="Coach"><div class="who-inner"><div class="who-face who-front"><span class="emoji">🏆</span>Coach</div><div class="who-face who-back">"Who pushed you harder because they knew you could take it?"</div></div></button>
+        <button class="who-card" data-who="Parent / Guardian"><div class="who-inner"><div class="who-face who-front"><span class="emoji">🏠</span>Parent / Guardian</div><div class="who-face who-back">"Who showed up for you, even when they were exhausted?"</div></div></button>
+        <button class="who-card" data-who="Sibling"><div class="who-inner"><div class="who-face who-front"><span class="emoji">🤜</span>Sibling</div><div class="who-face who-back">"Who's known you the longest and still has your back?"</div></div></button>
+        <button class="who-card" data-who="Friend"><div class="who-inner"><div class="who-face who-front"><span class="emoji">🫂</span>Friend</div><div class="who-face who-back">"Who chose to be in your life — and keeps choosing?"</div></div></button>
+        <button class="who-card" data-who="Mentor"><div class="who-inner"><div class="who-face who-front"><span class="emoji">🧭</span>Mentor</div><div class="who-face who-back">"Who gave you advice that changed your direction?"</div></div></button>
+        <button class="who-card" data-who="Someone Else"><div class="who-inner"><div class="who-face who-front"><span class="emoji">⭐</span>Someone Else</div><div class="who-face who-back">"Family isn't always who you expect. Who's yours?"</div></div></button>
+      </div>
+      <div class="name-row">
+        <label for="personName">Their name (or what you call them):</label>
+        <input type="text" id="personName" placeholder="e.g., Ms. Rivera, Coach D, Mom, Tío Luis" maxlength="40" autocomplete="off">
+      </div>
+      <button class="st-btn" id="btn1" disabled>Lock in my person →</button>
+      <p class="st-hint" id="hint1">Pick a card and type a name to continue.</p>
+    </div>
+  </section>
+
+  <!-- ============ STATION 2 ============ -->
+  <section class="station locked fade" id="st2">
+    <div class="station-head">
+      <div class="st-light" aria-hidden="true"></div>
+      <div class="st-meta">
+        <div class="st-eyebrow">Station 2 · Locked</div>
+        <div class="st-title">Cut three gold records</div>
+      </div>
+      <div class="st-lock">🔒 Finish Station 1</div>
+    </div>
+    <div class="station-body">
+      <p class="st-prompt">"Thanks for everything" makes a boring song. <strong>Specific memories make hits.</strong> Fill each record with one real, specific thing — a moment, a sacrifice, a lesson. When it's specific enough, the record turns gold.</p>
+      <div class="records">
+        <div class="record-slot" id="rec1">
+          <div class="vinyl" aria-hidden="true"></div>
+          <div class="rec-label">Record 1 · A moment</div>
+          <div class="rec-starter">"A specific time they showed up for me was..."</div>
+          <textarea id="reason1" placeholder="e.g., She stayed after school every Tuesday to help me pass algebra, even though she had her own kids to get home to." aria-label="Reason 1"></textarea>
+          <div class="spec-meter"><div class="spec-fill"></div></div>
+          <div class="spec-note">Add a real detail — a place, a day, an action.</div>
+        </div>
+        <div class="record-slot" id="rec2">
+          <div class="vinyl" aria-hidden="true"></div>
+          <div class="rec-label">Record 2 · A lesson</div>
+          <div class="rec-starter">"Something they taught me that changed me was..."</div>
+          <textarea id="reason2" placeholder="e.g., He taught me that losing a game doesn't make you a loser — quitting on your team does." aria-label="Reason 2"></textarea>
+          <div class="spec-meter"><div class="spec-fill"></div></div>
+          <div class="spec-note">Add a real detail — a place, a day, an action.</div>
+        </div>
+        <div class="record-slot" id="rec3">
+          <div class="vinyl" aria-hidden="true"></div>
+          <div class="rec-label">Record 3 · A sacrifice or belief</div>
+          <div class="rec-starter">"They believed in me / gave something up when..."</div>
+          <textarea id="reason3" placeholder="e.g., She worked double shifts all summer so I could go on the college visit trip, and never once complained about it." aria-label="Reason 3"></textarea>
+          <div class="spec-meter"><div class="spec-fill"></div></div>
+          <div class="spec-note">Add a real detail — a place, a day, an action.</div>
+        </div>
+      </div>
+      <button class="st-btn" id="btn2" disabled>All three records are gold →</button>
+      <p class="st-hint">All three records need to turn gold to continue.</p>
+    </div>
+  </section>
+
+  <!-- ============ STATION 3 ============ -->
+  <section class="station locked fade" id="st3">
+    <div class="station-head">
+      <div class="st-light" aria-hidden="true"></div>
+      <div class="st-meta">
+        <div class="st-eyebrow">Station 3 · Locked</div>
+        <div class="st-title">Find your sound</div>
+      </div>
+      <div class="st-lock">🔒 Finish Station 2</div>
+    </div>
+    <div class="station-body">
+      <p class="st-prompt">Great artists pick a genre based on the <strong>feeling</strong> they want to create. First: when your person hears this song, how do you want them to feel?</p>
+      <div class="feel-row" id="feelRow">
+        <button class="feel-chip" data-feel="tearful">Moved to tears 🥹</button>
+        <button class="feel-chip" data-feel="celebrated">Celebrated 🎉</button>
+        <button class="feel-chip" data-feel="proud">Proud &amp; strong 💪</button>
+        <button class="feel-chip" data-feel="peaceful">Peaceful &amp; warm ☀️</button>
+        <button class="feel-chip" data-feel="hyped">Hyped up 🔥</button>
+      </div>
+      <div class="genre-grid" id="genreGrid">
+        <button class="genre-card" data-genre="Pop" data-feels="celebrated,hyped"><div class="genre-name">Pop</div><div class="genre-mood">Bright, catchy, feel-good. A song they'll hum all week.</div><div class="waveform"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></button>
+        <button class="genre-card" data-genre="R&B" data-feels="tearful,peaceful"><div class="genre-name">R&amp;B</div><div class="genre-mood">Smooth, soulful, straight from the heart.</div><div class="waveform"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></button>
+        <button class="genre-card" data-genre="Hip-Hop" data-feels="proud,hyped"><div class="genre-name">Hip-Hop</div><div class="genre-mood">Real talk, rhythm, and storytelling with confidence.</div><div class="waveform"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></button>
+        <button class="genre-card" data-genre="Acoustic / Folk" data-feels="tearful,peaceful"><div class="genre-name">Acoustic</div><div class="genre-mood">Quiet guitar, honest words. Perfect for the tearjerker.</div><div class="waveform"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></button>
+        <button class="genre-card" data-genre="Rock" data-feels="proud,hyped"><div class="genre-name">Rock</div><div class="genre-mood">Big energy, big guitars, an anthem for your hero.</div><div class="waveform"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></button>
+        <button class="genre-card" data-genre="Country" data-feels="peaceful,tearful"><div class="genre-name">Country</div><div class="genre-mood">Storytelling about home, family, and gratitude.</div><div class="waveform"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></button>
+      </div>
+      <button class="st-btn" id="btn3" disabled>This is my sound →</button>
+      <p class="st-hint">Pick a feeling, then pick a genre. The gold tag shows genres that match your vibe — but you're the artist. Any choice works.</p>
+    </div>
+  </section>
+
+  <!-- ============ STATION 4 ============ -->
+  <section class="station locked fade" id="st4">
+    <div class="station-head">
+      <div class="st-light" aria-hidden="true"></div>
+      <div class="st-meta">
+        <div class="st-eyebrow">Station 4 · Locked</div>
+        <div class="st-title">The Lyric Lab</div>
+      </div>
+      <div class="st-lock">🔒 Finish Station 3</div>
+    </div>
+    <div class="station-body">
+      <div class="golden-rule">⚖️ <b>Remember the Golden Rules:</b> AI <b>assists</b> — it doesn't replace you. If you use a starter line, you must <b>make it yours</b> before it locks in. Change words. Add your memory. That's not extra work — that's what makes it a real song.</div>
+      <p class="st-prompt">Your three gold records are your raw material. For each one, write 1–2 lyric lines. Stuck? Tap <strong>"Give me a starter"</strong> — but you'll have to edit it before it counts.</p>
+      <div id="lyricBlocks"></div>
+      <button class="st-btn" id="btn4" disabled>My lyrics are locked in →</button>
+      <p class="st-hint">All three lyric lines need the green LOCKED IN tag to continue.</p>
+    </div>
+  </section>
+
+  <!-- ============ STATION 5 ============ -->
+  <section class="station locked fade" id="st5">
+    <div class="station-head">
+      <div class="st-light" aria-hidden="true"></div>
+      <div class="st-meta">
+        <div class="st-eyebrow">Station 5 · Locked</div>
+        <div class="st-title">Master it in Suno</div>
+      </div>
+      <div class="st-lock">🔒 Finish Station 4</div>
+    </div>
+    <div class="station-body">
+      <p class="st-prompt">Everything you built in this session just became your <strong>real Suno prompt</strong>. Copy it, open Suno, and produce your track.</p>
+
+      <div class="prompt-card">
+        <h3>◉ Your Suno Style Prompt</h3>
+        <div class="prompt-text" id="stylePrompt"></div>
+        <button class="copy-btn" data-copy="stylePrompt">📋 Copy style prompt</button>
+      </div>
+
+      <div class="prompt-card">
+        <h3>◉ Your Custom Lyrics (starting draft)</h3>
+        <div class="prompt-text" id="lyricPrompt"></div>
+        <button class="copy-btn" data-copy="lyricPrompt">📋 Copy lyrics</button>
+      </div>
+
+      <ul class="checklist">
+        <li><span class="n">01</span><span>Open Suno and choose <strong>Custom Mode</strong> so you can paste your own lyrics.</span></li>
+        <li><span class="n">02</span><span>Paste your style prompt in the style box and your lyrics in the lyrics box.</span></li>
+        <li><span class="n">03</span><span>Generate <strong>at least two versions</strong> — real producers never settle for take one.</span></li>
+        <li><span class="n">04</span><span>Listen closely. Adjust the lyrics or style words and regenerate until it sounds like <em>you</em>.</span></li>
+        <li><span class="n">05</span><span>Download or save your favorite take. That's your master recording. 🏆</span></li>
+      </ul>
+
+      <div class="delivery">
+        <h3>The delivery plan 🎁</h3>
+        <p>A thank-you song only counts when it's heard. How will you share it?</p>
+        <select id="deliveryHow" aria-label="How will you share your song?">
+          <option value="">How will you share it?</option>
+          <option>Play it for them in person</option>
+          <option>Send it in a text or message</option>
+          <option>Play it at a family gathering</option>
+          <option>Make it a surprise with friends or classmates</option>
+          <option>Another way (my own idea)</option>
+        </select>
+        <input type="text" id="deliveryWhen" placeholder="When? (e.g., this Sunday at dinner, after practice Friday)" maxlength="80">
+      </div>
+
+      <button class="st-btn" id="btn5" disabled>Finish my session ✦</button>
+      <p class="st-hint">Choose how and when you'll deliver it to wrap the session.</p>
+    </div>
+  </section>
+
+  <!-- ============ FINALE ============ -->
+  <section class="finale" id="finale">
+    <h2>🏆 Session complete.</h2>
+    <p style="margin-bottom:34px;">You didn't just finish a project. You made something real for someone real — and you used AI the right way to do it: as your assistant, not your replacement.</p>
+    <div class="liner" id="linerCard">
+      <div class="l-eyebrow">Official Liner Notes</div>
+      <h3 id="lnTitle">"The Thank You Track"</h3>
+      <div class="ded" id="lnDed"></div>
+      <ul class="reasons" id="lnReasons"></ul>
+      <div class="sig" id="lnSig"></div>
+    </div>
+    <button class="copy-btn" id="copySummary" style="margin-top:24px;">📋 Copy my full session summary</button>
+    <p class="st-hint" style="margin-top:10px;">Paste your summary somewhere safe — it's your proof of completion and your backup.</p>
+  </section>
+
+</div>
+
+<div class="sr-only" role="status" aria-live="polite" id="ariaStatus"></div>
+
+<script>
+(function(){
+  var S = { who:'', name:'', reasons:['','',''], feel:'', genre:'', lyrics:['','',''], aiUsed:[false,false,false], aiEdited:[true,true,true], aiBase:['','',''], how:'', when:'' };
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function announce(msg){ document.getElementById('ariaStatus').textContent = msg; }
+
+  /* fade-in observer */
+  var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target);} }); },{threshold:.08});
+  document.querySelectorAll('.fade').forEach(function(el){ io.observe(el); });
+
+  function completeStation(n){
+    var st = document.getElementById('st'+n);
+    st.classList.remove('unlocked'); st.classList.add('completed','unlocked');
+    st.querySelector('.st-eyebrow').textContent = 'Station '+n+' · Complete';
+    document.getElementById('ch'+n).classList.add('on');
+    if(n<5){
+      var next = document.getElementById('st'+(n+1));
+      next.classList.remove('locked'); next.classList.add('unlocked');
+      next.querySelector('.st-eyebrow').textContent = 'Station '+(n+1)+' · Recording';
+      var lock = next.querySelector('.st-lock'); if(lock) lock.remove();
+      announce('Station '+n+' complete. Station '+(n+1)+' unlocked.');
+      setTimeout(function(){ next.scrollIntoView({behavior: prefersReduced?'auto':'smooth', block:'start'}); }, 350);
+    }
+  }
+
+  /* ============ STATION 1 ============ */
+  var selectedCard = null;
+  document.querySelectorAll('.who-card').forEach(function(card){
+    card.addEventListener('click', function(){
+      if(!card.classList.contains('flipped')){
+        card.classList.add('flipped');
+        setTimeout(function(){ card.classList.remove('flipped'); selectCard(card); }, 1400);
+      } else {
+        card.classList.remove('flipped'); selectCard(card);
+      }
+    });
+  });
+  function selectCard(card){
+    document.querySelectorAll('.who-card').forEach(function(c){ c.classList.remove('selected'); });
+    card.classList.add('selected');
+    S.who = card.getAttribute('data-who');
+    check1();
+  }
+  var nameInput = document.getElementById('personName');
+  nameInput.addEventListener('input', function(){ S.name = nameInput.value.trim(); check1(); });
+  function check1(){
+    var ok = S.who && S.name.length >= 2;
+    document.getElementById('btn1').disabled = !ok;
+    document.getElementById('hint1').textContent = ok ? 'Ready when you are.' : 'Pick a card and type a name to continue.';
+  }
+  document.getElementById('btn1').addEventListener('click', function(){
+    document.getElementById('sessionFor').textContent = '◉ Now recording: "'+S.name+"'s Track\"";
+    updateLyricSources();
+    completeStation(1);
+    this.disabled = true; this.textContent = '✓ '+S.name+' locked in';
+  });
+
+  /* ============ STATION 2 ============ */
+  var genericPhrases = ['everything','being there','all you do','being you','all your help','being nice','being cool','helping me','being my'];
+  function specScore(t){
+    var txt = t.trim(); if(!txt) return 0;
+    var score = Math.min(txt.length/70, .6);
+    var lower = txt.toLowerCase();
+    var genericOnly = txt.length < 30 && genericPhrases.some(function(p){ return lower.indexOf(p) !== -1; });
+    if(genericOnly) return Math.min(score, .3);
+    var hasDetail = /\b(when|every|after|before|because|taught|stayed|worked|drove|showed|told|gave|night|morning|school|game|practice|year|day|week|home|time)\b/i.test(txt);
+    if(txt.length >= 40) score += .25;
+    if(hasDetail) score += .2;
+    return Math.min(score, 1);
+  }
+  [1,2,3].forEach(function(i){
+    var ta = document.getElementById('reason'+i);
+    var slot = document.getElementById('rec'+i);
+    var fill = slot.querySelector('.spec-fill');
+    var note = slot.querySelector('.spec-note');
+    ta.addEventListener('input', function(){
+      var sc = specScore(ta.value);
+      fill.style.width = (sc*100)+'%';
+      if(sc >= .85){
+        slot.classList.add('gold');
+        note.textContent = '🏆 Gold. That\'s a real memory.'; note.className = 'spec-note good';
+        S.reasons[i-1] = ta.value.trim();
+      } else {
+        slot.classList.remove('gold');
+        S.reasons[i-1] = '';
+        if(ta.value.trim().length && sc < .5){ note.textContent = 'Too general — what exactly did they do?'; note.className='spec-note warn'; }
+        else if(ta.value.trim().length){ note.textContent = 'Almost — add one more real detail.'; note.className='spec-note'; }
+        else { note.textContent = 'Add a real detail — a place, a day, an action.'; note.className='spec-note'; }
+      }
+      document.getElementById('btn2').disabled = !(S.reasons[0] && S.reasons[1] && S.reasons[2]);
+    });
+  });
+  document.getElementById('btn2').addEventListener('click', function(){
+    updateLyricSources(); completeStation(2);
+    this.disabled = true; this.textContent = '✓ Three gold records cut';
+  });
+
+  /* ============ STATION 3 ============ */
+  document.querySelectorAll('.feel-chip').forEach(function(chip){
+    chip.addEventListener('click', function(){
+      document.querySelectorAll('.feel-chip').forEach(function(c){ c.classList.remove('active'); });
+      chip.classList.add('active');
+      S.feel = chip.getAttribute('data-feel');
+      document.querySelectorAll('.genre-card').forEach(function(g){
+        var feels = g.getAttribute('data-feels').split(',');
+        g.classList.toggle('suggested', feels.indexOf(S.feel) !== -1);
+      });
+      check3();
+    });
+  });
+  document.querySelectorAll('.genre-card').forEach(function(g){
+    g.addEventListener('click', function(){
+      document.querySelectorAll('.genre-card').forEach(function(x){ x.classList.remove('picked'); });
+      g.classList.add('picked');
+      S.genre = g.getAttribute('data-genre');
+      check3();
+    });
+  });
+  function check3(){ document.getElementById('btn3').disabled = !(S.feel && S.genre); }
+  document.getElementById('btn3').addEventListener('click', function(){
+    buildLyricLab(); completeStation(3);
+    this.disabled = true; this.textContent = '✓ '+S.genre+' it is';
+  });
+
+  /* ============ STATION 4 ============ */
+  var starterBank = {
+    tearful:[' , I never said it out loud, but I saw it all',' , some debts can\'t be paid, only sung'],
+    celebrated:[' , this one\'s for you, turn it up loud',' , you deserve a chorus with your name in it'],
+    proud:[' , you built the backbone I stand on',' , everything I win, we win together'],
+    peaceful:[' , home was never a place, it was you',' , thank you for the quiet ways you loved me'],
+    hyped:[' , look at me now, that\'s your work showing',' , every rep, every step, you were there']
+  };
+  function starterFor(i){
+    var mem = S.reasons[i] || '';
+    var short = mem.length > 60 ? mem.slice(0,60).replace(/\s+\S*$/,'') : mem;
+    var tail = (starterBank[S.feel] || starterBank.proud)[i % 2];
+    return short.charAt(0).toUpperCase() + short.slice(1).replace(/[.?!]+$/,'') + tail;
+  }
+  var srcLabels = ['A moment','A lesson','A sacrifice or belief'];
+  function updateLyricSources(){
+    var host = document.getElementById('lyricBlocks');
+    if(host.children.length) {
+      [0,1,2].forEach(function(i){
+        var b = document.getElementById('src'+i);
+        if(b) b.innerHTML = '<b>Gold record '+(i+1)+' · '+srcLabels[i]+'</b>'+escapeHtml(S.reasons[i]||'');
+      });
+    }
+  }
+  function escapeHtml(s){ var d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+  function buildLyricLab(){
+    var host = document.getElementById('lyricBlocks');
+    host.innerHTML = '';
+    [0,1,2].forEach(function(i){
+      var blk = document.createElement('div');
+      blk.className = 'lyric-block';
+      blk.innerHTML =
+        '<div class="lyric-src" id="src'+i+'"><b>Gold record '+(i+1)+' · '+srcLabels[i]+'</b>'+escapeHtml(S.reasons[i])+'</div>'+
+        '<textarea id="lyr'+i+'" placeholder="Turn this memory into 1–2 lyric lines..." aria-label="Lyric line '+(i+1)+'"></textarea>'+
+        '<div class="lyric-tools">'+
+          '<button class="mini-btn" id="starterBtn'+i+'">✨ Give me a starter</button>'+
+          '<span class="ai-flag" id="aiFlag'+i+'">AI DRAFT — EDIT TO MAKE IT YOURS</span>'+
+          '<span class="lock-flag" id="lockFlag'+i+'">✓ LOCKED IN</span>'+
+        '</div>';
+      host.appendChild(blk);
+      var ta = blk.querySelector('textarea');
+      var sBtn = blk.querySelector('#starterBtn'+i);
+      var aiFlag = blk.querySelector('#aiFlag'+i);
+      var lockFlag = blk.querySelector('#lockFlag'+i);
+      sBtn.addEventListener('click', function(){
+        var st = starterFor(i);
+        ta.value = st; S.aiBase[i] = st; S.aiUsed[i] = true; S.aiEdited[i] = false;
+        ta.classList.add('ai-draft'); aiFlag.classList.add('show'); lockFlag.classList.remove('show');
+        blk.classList.remove('locked-in'); S.lyrics[i]=''; check4(); ta.focus();
+      });
+      ta.addEventListener('input', function(){
+        var v = ta.value.trim();
+        if(S.aiUsed[i] && !S.aiEdited[i]){
+          if(v !== S.aiBase[i].trim() && Math.abs(v.length - S.aiBase[i].trim().length) >= 4){
+            S.aiEdited[i] = true; ta.classList.remove('ai-draft'); aiFlag.classList.remove('show');
+          }
+        }
+        var ok = v.length >= 15 && (!S.aiUsed[i] || S.aiEdited[i]);
+        S.lyrics[i] = ok ? v : '';
+        blk.classList.toggle('locked-in', ok);
+        lockFlag.classList.toggle('show', ok);
+        aiFlag.classList.toggle('show', S.aiUsed[i] && !S.aiEdited[i]);
+        check4();
+      });
+    });
+  }
+  function check4(){ document.getElementById('btn4').disabled = !(S.lyrics[0] && S.lyrics[1] && S.lyrics[2]); }
+  document.getElementById('btn4').addEventListener('click', function(){
+    buildPrompts(); completeStation(4);
+    this.disabled = true; this.textContent = '✓ Lyrics locked in';
+  });
+
+  /* ============ STATION 5 ============ */
+  var feelWords = { tearful:'emotional, heartfelt, tender', celebrated:'joyful, uplifting, celebratory', proud:'powerful, triumphant, anthemic', peaceful:'warm, gentle, nostalgic', hyped:'energetic, bold, driving' };
+  function buildPrompts(){
+    var style = S.genre + ' song, ' + (feelWords[S.feel]||'heartfelt') +
+      ', a thank-you tribute, clear vocals, modern production, radio-quality mix';
+    document.getElementById('stylePrompt').textContent = style;
+    var lyr = '[Verse 1]\n' + S.lyrics[0] + '\n\n[Verse 2]\n' + S.lyrics[1] +
+      '\n\n[Chorus]\nThis one\'s for you, ' + S.name + '\nThank you for it all\n\n[Bridge]\n' + S.lyrics[2] +
+      '\n\n[Outro]\n' + S.name + ', this is your song';
+    document.getElementById('lyricPrompt').textContent = lyr;
+  }
+  var dHow = document.getElementById('deliveryHow'), dWhen = document.getElementById('deliveryWhen');
+  function check5(){ S.how=dHow.value; S.when=dWhen.value.trim(); document.getElementById('btn5').disabled = !(S.how && S.when.length>=3); }
+  dHow.addEventListener('change', check5); dWhen.addEventListener('input', check5);
+  document.getElementById('btn5').addEventListener('click', function(){
+    completeStation(5);
+    document.getElementById('recDot').classList.add('done');
+    document.getElementById('recText').textContent = 'MASTERED';
+    document.getElementById('lnDed').textContent = 'Dedicated to ' + S.name + ' ('+S.who+')';
+    var ul = document.getElementById('lnReasons'); ul.innerHTML='';
+    S.reasons.forEach(function(r){ var li=document.createElement('li'); li.textContent=r; ul.appendChild(li); });
+    document.getElementById('lnSig').textContent = 'Genre: '+S.genre+' · Produced with Suno · AI in Music Certification';
+    var fin = document.getElementById('finale');
+    fin.classList.add('show');
+    this.disabled = true; this.textContent = '✓ Session mastered';
+    setTimeout(function(){ fin.scrollIntoView({behavior: prefersReduced?'auto':'smooth'}); }, 300);
+    if(!prefersReduced) confetti();
+    announce('Session complete. Congratulations.');
+  });
+
+  function confetti(){
+    var colors=['#7B2FBE','#D9A441','#E2CFF5','#1E8A5A','#E08B3E'];
+    for(var i=0;i<70;i++){
+      var c=document.createElement('div'); c.className='confetti';
+      c.style.left=Math.random()*100+'vw';
+      c.style.width=(6+Math.random()*6)+'px'; c.style.height=(8+Math.random()*8)+'px';
+      c.style.background=colors[i%colors.length];
+      c.style.animationDuration=(2.4+Math.random()*2.2)+'s';
+      c.style.animationDelay=(Math.random()*0.8)+'s';
+      document.body.appendChild(c);
+      setTimeout(function(el){ return function(){ el.remove(); }; }(c), 6000);
+    }
+  }
+
+  /* copy buttons */
+  document.querySelectorAll('.copy-btn[data-copy]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var txt = document.getElementById(btn.getAttribute('data-copy')).textContent;
+      navigator.clipboard.writeText(txt).then(function(){
+        var old = btn.textContent; btn.textContent = '✓ Copied!';
+        setTimeout(function(){ btn.textContent = old; }, 1800);
+      });
+    });
+  });
+  document.getElementById('copySummary').addEventListener('click', function(){
+    var btn = this;
+    var summary = 'THE THANK YOU TRACK — SESSION SUMMARY\n' +
+      '======================================\n' +
+      'Dedicated to: ' + S.name + ' (' + S.who + ')\n' +
+      'Genre: ' + S.genre + '  ·  Feeling: ' + S.feel + '\n\n' +
+      'THREE REASONS:\n1. ' + S.reasons[0] + '\n2. ' + S.reasons[1] + '\n3. ' + S.reasons[2] + '\n\n' +
+      'SUNO STYLE PROMPT:\n' + document.getElementById('stylePrompt').textContent + '\n\n' +
+      'LYRICS:\n' + document.getElementById('lyricPrompt').textContent + '\n\n' +
+      'DELIVERY PLAN: ' + S.how + ' — ' + S.when + '\n\n' +
+      'Completed as part of the AI in Music Certification.';
+    navigator.clipboard.writeText(summary).then(function(){
+      var old = btn.textContent; btn.textContent = '✓ Copied — save it somewhere safe!';
+      setTimeout(function(){ btn.textContent = old; }, 2200);
+    });
+  });
+})();
+</script>
+</body>
+</html>
