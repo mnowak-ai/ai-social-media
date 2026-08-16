@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Whack-a-Flaw: Content Desk Frenzy | AI in Social Media</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --purple-deep:#2A0B47;
+    --purple-mid:#4A1478;
+    --purple-bright:#7B2FBE;
+    --gold:#E9A23B;
+    --ink:#2A0B47;
+    --body:#3d2b52;
+    --line:#e8e0f2;
+    --wash:#f7f4fb;
+    --good:#2ecc80;
+    --good-deep:#1d7a4f;
+    --bad:#ff5f52;
+    --bad-deep:#b3352c;
+    --dirt:#3a1160;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{font-family:'DM Sans',sans-serif;background:#fff;color:var(--body);line-height:1.55;font-size:17px;}
+  .wrap{max-width:860px;margin:0 auto;padding:24px 16px 60px;}
+
+  .fade-in{opacity:0;transform:translateY(14px);animation:fadeUp .5s ease forwards;}
+  @keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
+
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--purple-bright);font-weight:600;margin-bottom:10px;}
+  h1{font-family:'Fraunces',serif;color:var(--ink);font-size:clamp(30px,6vw,44px);font-weight:700;line-height:1.1;margin-bottom:12px;}
+  p.lede{font-size:18px;max-width:640px;}
+
+  .screen{display:none;}
+  .screen.active{display:block;}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:14px 28px;border-radius:12px;border:none;font-family:'DM Sans',sans-serif;font-size:17px;font-weight:700;cursor:pointer;background:var(--purple-deep);color:#fff;transition:transform .12s ease,background .15s ease;-webkit-tap-highlight-color:transparent;}
+  .btn:hover{background:var(--purple-mid);}
+  .btn:active{transform:scale(.97);}
+  .btn.gold{background:var(--gold);color:var(--purple-deep);}
+  .btn.gold:hover{background:#f0b055;}
+  .btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px;}
+
+  .rules-arcade{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:24px 0;}
+  @media(max-width:560px){.rules-arcade{grid-template-columns:1fr;}}
+  .rule-a{border:2px solid var(--line);border-radius:14px;padding:16px;display:flex;gap:12px;align-items:flex-start;}
+  .rule-a .ico{font-size:26px;line-height:1;}
+  .rule-a b{color:var(--ink);display:block;font-size:16px;}
+  .rule-a span{font-size:14px;}
+  .rule-a.whack{border-color:var(--bad-deep);background:#fff6f5;}
+  .rule-a.spare{border-color:var(--good-deep);background:#f2fbf6;}
+
+  /* ---------- cabinet ---------- */
+  .cabinet{background:var(--purple-deep);border-radius:20px;padding:12px;box-shadow:0 16px 50px rgba(42,11,71,.35);}
+  .marquee{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 10px 12px;flex-wrap:wrap;}
+  .marquee-title{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;}
+  .hud-stats{display:flex;gap:14px;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#fff;flex-wrap:wrap;}
+  .hud-stats .stat b{color:var(--gold);}
+  .hearts{letter-spacing:2px;font-size:15px;}
+
+  .yard{
+    position:relative;border-radius:12px;overflow:hidden;border:2px solid var(--purple-mid);
+    background:linear-gradient(180deg,#4A1478 0%, #3a1160 45%, #2A0B47 100%);
+    padding:64px 10px 18px;touch-action:manipulation;
+    cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Ctext y='28' font-size='26'%3E🔨%3C/text%3E%3C/svg%3E") 8 24, pointer;
+  }
+  .fever-banner{
+    position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:9;
+    font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:12px;letter-spacing:.2em;color:var(--gold);
+    opacity:0;pointer-events:none;
+  }
+  .fever-banner.on{opacity:1;animation:feverPulse .5s ease infinite alternate;}
+  @keyframes feverPulse{from{transform:translateX(-50%) scale(1);}to{transform:translateX(-50%) scale(1.12);}}
+
+  .holes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:640px;margin:0 auto;}
+  .hole-cell{position:relative;height:150px;}
+  @media(max-width:560px){.hole-cell{height:138px;}.holes{gap:8px;}}
+  .hole{
+    position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+    width:86%;height:34px;border-radius:50%;
+    background:radial-gradient(ellipse at center, #170528 0%, #1d0733 60%, var(--dirt) 100%);
+    box-shadow:inset 0 6px 14px rgba(0,0,0,.7);
+  }
+  .hole-rim{
+    position:absolute;bottom:26px;left:50%;transform:translateX(-50%);
+    width:96%;height:16px;border-radius:50%;background:var(--purple-bright);opacity:.35;
+  }
+
+  /* mole */
+  .mole-wrap{
+    position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
+    width:100%;display:flex;flex-direction:column;align-items:center;
+    pointer-events:none;
+  }
+  .mole{
+    pointer-events:auto;cursor:inherit;position:relative;
+    transform:translateY(130%);transition:transform .22s cubic-bezier(.2,.9,.3,1.2);
+    display:flex;flex-direction:column;align-items:center;
+    -webkit-tap-highlight-color:transparent;user-select:none;
+  }
+  .mole.up{transform:translateY(0);}
+  .mole.bonked{animation:bonk .4s ease forwards;}
+  .mole.oops{animation:oops .45s ease forwards;}
+  .mole.duck{transition:transform .3s ease;transform:translateY(135%);}
+  @keyframes bonk{0%{transform:translateY(0) scaleY(1);}30%{transform:translateY(22%) scaleY(.55) scaleX(1.25);}100%{transform:translateY(135%) scaleY(.5);opacity:.4;}}
+  @keyframes oops{0%{transform:translateY(0);}25%{transform:translateY(0) rotate(-7deg);}50%{transform:translateY(0) rotate(7deg);}100%{transform:translateY(135%);}}
+
+  .sign{
+    position:relative;z-index:2;background:#fff;border:2px solid var(--purple-bright);border-radius:10px;
+    padding:7px 9px 6px;width:150px;margin-bottom:-6px;
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:700;line-height:1.35;color:var(--ink);
+    box-shadow:0 4px 12px rgba(0,0,0,.4);text-align:left;
+  }
+  @media(max-width:560px){.sign{width:118px;font-size:9.5px;}}
+  .sign .sign-cat{display:block;font-size:8px;letter-spacing:.12em;color:var(--purple-bright);margin-bottom:2px;}
+  .sign .timebar{height:4px;background:var(--wash);border-radius:99px;margin-top:5px;overflow:hidden;}
+  .sign .timebar-fill{height:100%;width:100%;background:linear-gradient(90deg,var(--gold),var(--bad));border-radius:99px;}
+  .mole.up .timebar-fill{animation:shrink linear forwards;animation-duration:var(--uptime,3s);}
+  @keyframes shrink{from{width:100%;}to{width:0%;}}
+
+  .critter{width:64px;height:52px;}
+  @media(max-width:560px){.critter{width:54px;height:44px;}}
+  .critter svg{display:block;width:100%;height:100%;}
+
+  .bonk-star{
+    position:absolute;z-index:8;pointer-events:none;font-size:30px;
+    animation:starPop .45s ease forwards;
+  }
+  @keyframes starPop{0%{transform:scale(.4) rotate(0);opacity:1;}100%{transform:scale(1.7) rotate(24deg) translateY(-22px);opacity:0;}}
+
+  .toast{
+    position:absolute;top:34px;left:50%;transform:translateX(-50%);z-index:9;
+    max-width:92%;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;
+    padding:7px 14px;border-radius:99px;opacity:0;pointer-events:none;
+  }
+  .toast.show{animation:toastPop 1.4s ease forwards;}
+  .toast.good{background:var(--good);color:#06341d;}
+  .toast.bad{background:var(--bad);color:#fff;}
+  @keyframes toastPop{0%{opacity:0;transform:translateX(-50%) translateY(-6px);}12%{opacity:1;transform:translateX(-50%) translateY(0);}80%{opacity:1;}100%{opacity:0;}}
+
+  /* overlay */
+  .overlay{position:absolute;inset:0;z-index:12;display:none;background:rgba(29,7,51,.95);color:#fff;overflow-y:auto;}
+  .overlay.show{display:block;animation:fadeUp .3s ease forwards;}
+  .overlay-inner{padding:22px 18px 26px;max-width:520px;margin:0 auto;}
+  .ov-wavetag{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;margin-bottom:6px;}
+  .ov-title{font-family:'Fraunces',serif;font-size:26px;font-weight:700;margin-bottom:8px;line-height:1.15;}
+  .ov-sub{font-size:14.5px;color:#d9c9ee;margin-bottom:16px;}
+  .debrief-row{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:13px;}
+  .debrief-row .d-head{display:flex;gap:8px;align-items:flex-start;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:12.5px;}
+  .debrief-row .d-why{color:#cdb9e8;margin-top:4px;font-size:12.5px;padding-left:24px;}
+  .debrief-row.right .d-mark{color:var(--good);}
+  .debrief-row.wrong .d-mark{color:var(--bad);}
+  .overlay .btn{width:100%;margin-top:12px;}
+
+  @media (prefers-reduced-motion: reduce){
+    .fade-in{animation:none;opacity:1;transform:none;}
+    .toast.show{animation:none;opacity:1;}
+    .fever-banner.on{animation:none;}
+    .mole{transition:none;}
+  }
+
+  /* ---------- results ---------- */
+  .gameover{background:var(--purple-deep);border-radius:20px;padding:30px 22px;text-align:center;color:#fff;box-shadow:0 16px 50px rgba(42,11,71,.35);}
+  .go-title{font-family:'IBM Plex Mono',monospace;font-weight:700;letter-spacing:.2em;font-size:clamp(20px,5vw,30px);text-transform:uppercase;margin-bottom:6px;}
+  .go-title.win{color:var(--good);}
+  .go-title.lose{color:var(--bad);}
+  .go-sub{font-family:'Fraunces',serif;font-size:20px;color:var(--gold);margin-bottom:18px;}
+  .go-verdict{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:10px 18px;border-radius:8px;border:3px solid;transform:rotate(-3deg);margin-bottom:16px;}
+  .go-verdict.pass{color:var(--good);border-color:var(--good);background:rgba(46,204,128,.12);}
+  .go-verdict.fail{color:var(--bad);border-color:var(--bad);background:rgba(255,95,82,.12);}
+  .scoreboard{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:440px;margin:0 auto 18px;}
+  @media(max-width:480px){.scoreboard{grid-template-columns:1fr 1fr;}}
+  .sb{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:12px 8px;}
+  .sb b{display:block;font-family:'IBM Plex Mono',monospace;font-size:24px;}
+  .sb span{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#cdb9e8;}
+  .wave-recap{max-width:440px;margin:0 auto 18px;text-align:left;}
+  .wr-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:9px 12px;margin-bottom:7px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;}
+  .wr-row .wr-name{flex:1;color:#fff;}
+  .wr-row .wr-score{color:var(--gold);font-weight:700;}
+  .go-note{max-width:480px;margin:0 auto 20px;font-size:14.5px;color:#e6dcf5;}
+  .full-review{max-width:520px;margin:0 auto 22px;text-align:left;}
+  .fr-round{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--gold);margin:18px 0 8px;padding-bottom:5px;
+    border-bottom:1px solid rgba(233,162,59,.35);
+  }
+  .fr-round:first-child{margin-top:0;}
+  .go-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+  .insert-coin{animation:blink 1.2s steps(2) infinite;}
+  @keyframes blink{50%{opacity:.35;}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="screen active" id="scr-intro">
+    <div class="fade-in">
+      <div class="eyebrow">AI in Social Media &middot; Impact Series Knowledge Check</div>
+      <h1>Whack-a-Flaw: Content Desk Frenzy</h1>
+      <p class="lede">The AI tools have been running all night, and their outputs are popping up all over the content desk. Some are clean. Some have the exact flaws you have been trained to spot. Grab the mallet.</p>
+    </div>
+
+    <div class="rules-arcade fade-in" style="animation-delay:.1s">
+      <div class="rule-a whack"><div class="ico">🔨</div><div><b>WHACK THE FLAWS</b><span>Tap any output that needs fixing before it ducks back underground and ships itself.</span></div></div>
+      <div class="rule-a spare"><div class="ico">🕊️</div><div><b>SPARE THE CLEAN ONES</b><span>Verified, labeled, reviewed work is friendly. Whacking clean work costs a heart. Let it duck in peace.</span></div></div>
+      <div class="rule-a"><div class="ico">⏱️</div><div><b>WATCH THE TIMER</b><span>Every sign has a shrinking bar. A flaw that escapes counts against you. Sparing is a decision, not slowness.</span></div></div>
+      <div class="rule-a"><div class="ico">❤️</div><div><b>5 HEARTS · 25 MOLES</b><span>20 right calls (80%) clears it. Rounds speed up. Everything reshuffles each run.</span></div></div>
+    </div>
+
+    <button class="btn gold fade-in" style="animation-delay:.2s" onclick="startGame()">🔨 GRAB THE MALLET</button>
+  </section>
+
+  <!-- ============ GAME ============ -->
+  <section class="screen" id="scr-game">
+    <div class="cabinet">
+      <div class="marquee">
+        <span class="marquee-title">🔨 Whack-a-Flaw</span>
+        <div class="hud-stats">
+          <span class="stat">ROUND <b id="hudRound">1/5</b></span>
+          <span class="stat">SCORE <b id="hudScore">0</b></span>
+          <span class="stat">ACC <b id="hudAcc">--%</b></span>
+          <span class="hearts" id="hudHearts">❤️❤️❤️❤️❤️</span>
+        </div>
+      </div>
+
+      <div class="yard" id="yard">
+        <div class="fever-banner" id="feverBanner">🔥 FEVER 🔥</div>
+        <div class="toast" id="toast"></div>
+        <div class="holes" id="holes"></div>
+
+        <div class="overlay" id="overlay">
+          <div class="overlay-inner">
+            <div class="ov-wavetag" id="ovTag"></div>
+            <div class="ov-title" id="ovTitle"></div>
+            <div class="ov-sub" id="ovSub"></div>
+            <div id="ovBody"></div>
+            <button class="btn gold" id="ovBtn" onclick="overlayNext()">START</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section class="screen" id="scr-results">
+    <div class="gameover fade-in">
+      <div class="go-title" id="goTitle"></div>
+      <div class="go-sub" id="goSub"></div>
+      <div class="go-verdict" id="goVerdict"></div>
+      <div class="scoreboard">
+        <div class="sb"><b id="sbScore">0</b><span>Score</span></div>
+        <div class="sb"><b id="sbAcc">0%</b><span>Accuracy</span></div>
+        <div class="sb"><b id="sbCalls">0/25</b><span>Right calls</span></div>
+        <div class="sb"><b id="sbStreak">0</b><span>Best streak</span></div>
+        <div class="sb"><b id="sbHearts">0</b><span>Hearts left</span></div>
+        <div class="sb"><b id="sbFever">0</b><span>Fever moles</span></div>
+      </div>
+      <div class="wave-recap" id="waveRecap"></div>
+      <div class="go-note" id="goNote"></div>
+      <div class="full-review" id="fullReview"></div>
+      <div class="go-actions">
+        <button class="btn gold insert-coin" onclick="restart()">🔨 PLAY AGAIN</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* =====================================================
+   WHACK-A-FLAW: CONTENT DESK FRENZY
+   Impact Series knowledge check, AI in Social Media
+   Whack flawed outputs, spare clean ones.
+   25 moles, pass = 20 (80%), reshuffles per run
+===================================================== */
+
+var ROUNDS = [
+  {
+    name:"THE IMPOSTORS", tag:"ROUND 1 OF 5", uptime:3.6,
+    sub:"Every AI tool belongs to one of three groups: video, visuals, or words. These moles are introducing themselves. Whack any tool claiming a job from the wrong group.",
+    review:"Three Ways AI Changed the Work",
+    items:[
+      {cat:"VIDEO TOOL", t:"I pulled 3 clips out of your webinar", flaw:false,
+       why:"Legit. Scanning long recordings and pulling clips is exactly what video tools do."},
+      {cat:"WRITING TOOL", t:"I removed the background from your footage", flaw:true,
+       why:"Impostor. Background removal is a video tool job. Writing tools only touch words."},
+      {cat:"IMAGE TOOL", t:"I made 5 thumbnail options for the post", flaw:false,
+       why:"Legit. Thumbnails and post graphics are the image group's core work."},
+      {cat:"IMAGE TOOL", t:"I wrote your 40 hook options", flaw:true,
+       why:"Impostor. Forty hooks in a minute is the writing group. Image tools make pictures, not sentences."},
+      {cat:"WRITING TOOL", t:"I turned one interview into an 8 post thread", flaw:false,
+       why:"Legit. Breaking one long idea into a sequence of short posts is classic writing tool work."}
+    ]
+  },
+  {
+    name:"THE VIDEO DESK", tag:"ROUND 2 OF 5", uptime:3.3,
+    sub:"Overnight the video tools captioned, clipped, and transcribed. It all reads fine at a glance, which is exactly the problem. Whack what needs fixing.",
+    review:"Smarter Video Creation",
+    items:[
+      {cat:"AUTO CAPTION", t:"You will need for cups of flour", flaw:true,
+       why:"For should be four. Homophones are one of the three places captions fail most, with names and numbers."},
+      {cat:"AUTO CAPTION", t:"Dough rests one hour · reviewed ✓", flaw:false,
+       why:"Clean. Reviewed and correct. The tedious part got fast, the checking part did not, and this one got checked."},
+      {cat:"AUTO CLIP", t:"Ends at 'the program was hard.' Next line was cut", flaw:true,
+       why:"The clip ends mid thought and reverses her meaning. Tools cut on sound and energy, never on meaning."},
+      {cat:"TRANSCRIPT", t:"Filler words removed, names verified ✓", flaw:false,
+       why:"Clean. Filler removal is what the tool is for, and the names got human eyes. Ship it."},
+      {cat:"AUTO CAPTION", t:"Guest name spelled 'Guadeloupe' · unverified", flaw:true,
+       why:"Names get replaced with whatever sounds closest. An unverified name in captions is a flaw until a person checks it."}
+    ]
+  },
+  {
+    name:"THE IMAGE DESK", tag:"ROUND 3 OF 5", uptime:3.0,
+    sub:"The image generator ran all night. Remember the checklist: read every word, count every finger, and ask whether a viewer is misled about something real.",
+    review:"Eye Catching Visuals",
+    items:[
+      {cat:"GENERATED IMAGE", t:"Hand in frame has SIX fingers", flaw:true,
+       why:"Hands and repeated objects are unreliable. Count them before you post, every single time."},
+      {cat:"GENERATED IMAGE", t:"Abstract concept art · labeled AI generated", flaw:false,
+       why:"Clean. Concept art misleads nobody about anything real, and it carries a label anyway."},
+      {cat:"GENERATED IMAGE", t:"Sign in image reads 'FALL ENROLMLENT'", flaw:true,
+       why:"Text inside generated images is still frequently wrong. Read every word, then add real text yourself."},
+      {cat:"GENERATED IMAGE", t:"Fake photo of our real campus, no label", flaw:true,
+       why:"The disclosure test: would a viewer be misled about something real? A fake photo of a real place is exactly that."},
+      {cat:"GENERATED IMAGE", t:"Thumbnail, no text, no hands, checked ✓", flaw:false,
+       why:"Clean. Nothing to garble, nothing to miscount, and it got looked at. This is what shippable looks like."}
+    ]
+  },
+  {
+    name:"THE COPY DESK", tag:"ROUND 4 OF 5", uptime:2.8,
+    sub:"The writing tool drafted claims all night, fluently and confidently. Invented claims take three shapes: a number, an official sounding name, a superlative. Whack accordingly.",
+    review:"Captions and Content",
+    items:[
+      {cat:"AI CLAIM", t:"94% placement rate · no source on file", flaw:true,
+       why:"A precise number with no source. Numbers are the first shape invented claims take. Verify before it ships."},
+      {cat:"AI CLAIM", t:"Classes start Sept 8 · registrar confirmed ✓", flaw:false,
+       why:"Clean. A checkable fact with a source attached. Not every claim is a threat. Knowing which is the skill."},
+      {cat:"AI CLAIM", t:"Approved by the National Welding Board", flaw:true,
+       why:"An official sounding body with no record of existing. Official names are the second shape of invented claims."},
+      {cat:"AI CLAIM", t:"Largest program in the Midwest · unverified", flaw:true,
+       why:"A superlative nobody measured. The third shape. Number, name, superlative: check all three, every time."},
+      {cat:"PAID POST", t:"Partnership post, #ad label included ✓", flaw:false,
+       why:"Clean. The tool will happily write a paid post with no label, but this one has its disclosure. That is on you, and it got done."}
+    ]
+  },
+  {
+    name:"FINAL FRENZY", tag:"ROUND 5 OF 5", uptime:2.4,
+    sub:"Everything at once, and faster. These moles carry the big truths and the big lies about all three tool groups. Trust your training.",
+    review:"Three Ways AI Changed the Work, the shared truths",
+    items:[
+      {cat:"HOT TAKE", t:"AI output is finished work, just post it", flaw:true,
+       why:"Everything that comes out of every group is a draft. Treating output as final is the most common mistake there is."},
+      {cat:"HOT TAKE", t:"It sounds confident, so it must be right", flaw:true,
+       why:"There is no tone shift when a tool is guessing. Confidence is not a signal of accuracy, and you cannot tell by reading."},
+      {cat:"HOT TAKE", t:"Specific prompts beat vague ones", flaw:false,
+       why:"True across all three groups. Being specific is the single biggest skill upgrade available, and it is free."},
+      {cat:"HOT TAKE", t:"AI saves time on volume, not judgment", flaw:false,
+       why:"True. Forty options got faster. Choosing the right one takes exactly as long as it always did, and it is your job."},
+      {cat:"HOT TAKE", t:"The tool warns you when it is guessing", flaw:true,
+       why:"It never does. No warning, no tone change, no signal. That is exactly why checking has to be a habit, not a reaction."}
+    ]
+  }
+];
+
+var TOTAL = 25;
+var PASS = 20;
+var MAX_HEARTS = 5;
+var HOLES = 6;
+
+var state = {};
+var moleTimer = null;
+var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function shuffle(arr){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
+  return a;
+}
+function show(id){
+  var s=document.querySelectorAll(".screen");
+  for(var i=0;i<s.length;i++){s[i].classList.remove("active");}
+  document.getElementById(id).classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function critterSVG(){
+  return '<svg viewBox="0 0 64 52" xmlns="http://www.w3.org/2000/svg">'+
+    '<ellipse cx="32" cy="30" rx="22" ry="21" fill="#7B2FBE"/>'+
+    '<ellipse cx="32" cy="34" rx="13" ry="12" fill="#a86fe0"/>'+
+    '<circle cx="24" cy="24" r="4.5" fill="#fff"/><circle cx="40" cy="24" r="4.5" fill="#fff"/>'+
+    '<circle cx="25" cy="25" r="2" fill="#2A0B47"/><circle cx="39" cy="25" r="2" fill="#2A0B47"/>'+
+    '<ellipse cx="32" cy="32" rx="4" ry="3" fill="#E9A23B"/>'+
+    '<path d="M27 39 q5 4 10 0" stroke="#2A0B47" stroke-width="2" fill="none" stroke-linecap="round"/>'+
+    '<path d="M14 14 q-4 -8 4 -9" stroke="#7B2FBE" stroke-width="4" fill="none" stroke-linecap="round"/>'+
+    '<path d="M50 14 q4 -8 -4 -9" stroke="#7B2FBE" stroke-width="4" fill="none" stroke-linecap="round"/>'+
+    '</svg>';
+}
+
+function buildHoles(){
+  var el=document.getElementById("holes");el.innerHTML="";
+  for(var i=0;i<HOLES;i++){
+    var c=document.createElement("div");
+    c.className="hole-cell";c.id="cell-"+i;
+    c.innerHTML='<div class="hole-rim"></div><div class="hole"></div><div class="mole-wrap" id="wrap-'+i+'"></div>';
+    el.appendChild(c);
+  }
+}
+
+function startGame(){
+  state={
+    roundIdx:0, phase:"roundIntro",
+    hearts:MAX_HEARTS, score:0, streak:0, bestStreak:0, feverMoles:0,
+    right:0, resolved:0,
+    rounds: ROUNDS.map(function(r){ return {def:r, items:shuffle(r.items), spawned:0, results:[], rightCount:0}; }),
+    current:null, lastHole:-1, over:false
+  };
+  buildHoles();
+  show("scr-game");
+  updateHud();
+  showRoundIntro();
+}
+
+function updateHud(){
+  document.getElementById("hudRound").textContent=Math.min(state.roundIdx+1,5)+"/5";
+  document.getElementById("hudScore").textContent=state.score;
+  document.getElementById("hudAcc").textContent= state.resolved? Math.round(100*state.right/state.resolved)+"%" : "--%";
+  var h="";
+  for(var i=0;i<MAX_HEARTS;i++){ h+= i<state.hearts?"❤️":"🖤"; }
+  document.getElementById("hudHearts").textContent=h;
+  document.getElementById("feverBanner").className="fever-banner"+(state.streak>=4?" on":"");
+}
+
+/* ---------- overlays ---------- */
+function showRoundIntro(){
+  var r=state.rounds[state.roundIdx].def;
+  document.getElementById("ovTag").textContent=r.tag;
+  document.getElementById("ovTitle").textContent=r.name;
+  document.getElementById("ovSub").textContent=r.sub;
+  document.getElementById("ovBody").innerHTML="";
+  document.getElementById("ovBtn").textContent="START ROUND "+(state.roundIdx+1);
+  document.getElementById("overlay").classList.add("show");
+  state.phase="roundIntro";
+}
+
+function overlayNext(){
+  document.getElementById("overlay").classList.remove("show");
+  if(state.phase==="roundIntro"){ beginRound(); }
+}
+
+/* ---------- round flow ---------- */
+function beginRound(){
+  state.phase="round";
+  scheduleNextMole(650);
+}
+
+function scheduleNextMole(delay){
+  clearTimeout(moleTimer);
+  moleTimer=setTimeout(popMole, delay);
+}
+
+function popMole(){
+  if(state.over||state.phase!=="round") return;
+  var rd=state.rounds[state.roundIdx];
+  if(rd.spawned>=rd.items.length){ return; }
+
+  var item=rd.items[rd.spawned];rd.spawned++;
+
+  var hole;
+  do{ hole=Math.floor(Math.random()*HOLES); } while(hole===state.lastHole);
+  state.lastHole=hole;
+
+  var READ_MULT = 1.5; /* reading-time multiplier: raise for slower readers, lower for speed demons */
+  var uptime = rd.def.uptime * READ_MULT + (reduced?1.4:0);
+
+  var wrap=document.getElementById("wrap-"+hole);
+  var m=document.createElement("div");
+  m.className="mole";
+  m.style.setProperty("--uptime", uptime+"s");
+  m.innerHTML='<div class="sign"><span class="sign-cat">'+item.cat+'</span>'+item.t+
+    '<div class="timebar"><div class="timebar-fill"></div></div></div>'+
+    '<div class="critter">'+critterSVG()+'</div>';
+  wrap.appendChild(m);
+
+  var mole={el:m,item:item,resolvedFlag:false,hole:hole};
+  state.current=mole;
+
+  m.addEventListener("pointerdown",function(e){
+    e.preventDefault();
+    if(mole.resolvedFlag||state.phase!=="round") return;
+    whack(mole);
+  });
+
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ m.classList.add("up"); }); });
+
+  /* escape timer */
+  mole.escapeTimer=setTimeout(function(){ escape(mole); }, uptime*1000);
+}
+
+function starAt(mole,emoji){
+  var yard=document.getElementById("yard");
+  var r=mole.el.getBoundingClientRect();
+  var yr=yard.getBoundingClientRect();
+  var s=document.createElement("div");
+  s.className="bonk-star";s.textContent=emoji;
+  s.style.left=(r.left-yr.left+r.width/2-15)+"px";
+  s.style.top=(r.top-yr.top+8)+"px";
+  yard.appendChild(s);
+  setTimeout(function(){ if(s.parentNode) s.parentNode.removeChild(s); },480);
+}
+
+function whack(mole){
+  mole.resolvedFlag=true;
+  clearTimeout(mole.escapeTimer);
+  var correct = mole.item.flaw===true;
+  if(correct){
+    mole.el.classList.add("bonked");
+    starAt(mole,"💥");
+    registerCall(true,"FLAW WHACKED +100",mole.item);
+  } else {
+    mole.el.classList.add("oops");
+    starAt(mole,"🛡️");
+    registerCall(false,"THAT WAS CLEAN WORK",mole.item);
+  }
+  finishMole(mole,correct);
+}
+
+function escape(mole){
+  if(mole.resolvedFlag) return;
+  mole.resolvedFlag=true;
+  mole.el.classList.add("duck");
+  var correct = mole.item.flaw===false;
+  if(correct){
+    registerCall(true,"CLEAN WORK SPARED +100",mole.item);
+  } else {
+    starAt(mole,"💨");
+    registerCall(false,"A FLAW ESCAPED",mole.item);
+  }
+  finishMole(mole,correct);
+}
+
+function finishMole(mole,correct){
+  var rd=state.rounds[state.roundIdx];
+  rd.results.push({item:mole.item,correct:correct});
+  if(correct) rd.rightCount++;
+
+  setTimeout(function(){ if(mole.el.parentNode) mole.el.parentNode.removeChild(mole.el); },480);
+
+  if(state.over) return;
+
+  if(rd.spawned>=rd.items.length){
+    state.phase="betweenRound";
+    setTimeout(function(){
+      if(state.roundIdx===state.rounds.length-1){ endRun(state.right>=PASS,"complete"); }
+      else { state.roundIdx++; updateHud(); showRoundIntro(); }
+    }, 750);
+  } else {
+    scheduleNextMole(520+Math.random()*380);
+  }
+}
+
+function registerCall(correct,msg,item){
+  state.resolved++;
+  if(correct){
+    state.right++;state.streak++;
+    if(state.streak>state.bestStreak)state.bestStreak=state.streak;
+    var fever=state.streak>=4;
+    if(fever)state.feverMoles++;
+    state.score+=100+(fever?state.streak*15:0);
+    toast(msg+(fever?" · 🔥FEVER":""),true);
+  } else {
+    state.streak=0;state.hearts--;
+    toast("💔 "+msg,false);
+    if(state.hearts<=0){
+      updateHud();
+      endRun(false,"hearts");
+      return;
+    }
+  }
+  updateHud();
+}
+
+function toast(msg,good){
+  var t=document.getElementById("toast");
+  t.textContent=msg;t.className="toast "+(good?"good":"bad");
+  void t.offsetWidth;t.classList.add("show");
+}
+
+/* ---------- end ---------- */
+function endRun(pass,reason){
+  if(state.over) return;
+  state.over=true;
+  clearTimeout(moleTimer);
+  state.phase="over";
+
+  var finalPass=state.right>=PASS;
+  var acc=Math.round(100*state.right/TOTAL);
+
+  setTimeout(function(){
+    show("scr-results");
+    var t=document.getElementById("goTitle");
+    if(reason==="hearts"){ t.textContent="MALLET CONFISCATED";t.className="go-title lose"; }
+    else if(finalPass){ t.textContent="DESK DEFENDED";t.className="go-title win"; }
+    else { t.textContent="GAME OVER";t.className="go-title lose"; }
+
+    document.getElementById("goSub").textContent =
+      reason==="hearts" ? "Too many wrong calls. The flaws overran the desk." :
+      (finalPass ? "The flawed outputs never stood a chance." : "The desk survived, but too much got through.");
+
+    var v=document.getElementById("goVerdict");
+    v.textContent = finalPass ? "MODULE PASSED · "+state.right+"/"+TOTAL : "NOT PASSED · "+state.right+"/"+TOTAL+" · NEED "+PASS;
+    v.className="go-verdict "+(finalPass?"pass":"fail");
+
+    document.getElementById("sbScore").textContent=state.score;
+    document.getElementById("sbAcc").textContent=acc+"%";
+    document.getElementById("sbCalls").textContent=state.right+"/"+TOTAL;
+    document.getElementById("sbStreak").textContent=state.bestStreak;
+    document.getElementById("sbHearts").textContent=state.hearts;
+    document.getElementById("sbFever").textContent=state.feverMoles;
+
+    var recap=document.getElementById("waveRecap");recap.innerHTML="";
+    state.rounds.forEach(function(rd,i){
+      var played=rd.results.length>0;
+      var needs=played&&rd.rightCount<rd.items.length;
+      var row=document.createElement("div");row.className="wr-row";
+      row.innerHTML='<span>'+(played?(rd.rightCount===rd.items.length?"✅":"⚠️"):"⛔")+'</span>'+
+        '<div class="wr-name">R'+(i+1)+' · '+rd.def.name+(needs?'<br><span style="font-size:10.5px;color:#cdb9e8;">Review: '+rd.def.review+'</span>':'')+'</div>'+
+        '<span class="wr-score">'+(played?rd.rightCount+"/"+rd.items.length:"--")+'</span>';
+      recap.appendChild(row);
+    });
+
+    var note;
+    if(finalPass&&state.right===TOTAL){
+      note="A flawless shift. 25 moles, 25 right calls, best streak "+state.bestStreak+". You know all three tool groups, every limit, and all three shapes of an invented claim. The mallet is yours for life.";
+    } else if(finalPass){
+      note="Desk defended with "+state.right+" right calls out of 25. Any round marked ⚠️ names the exact article to reread. The full play-by-play is below, and the moles reshuffle every run.";
+    } else {
+      note="The desk takes 20 right calls to defend, and this shift landed "+state.right+". The full play-by-play below shows exactly what you got right and what got past you, with the why for each one.";
+    }
+    document.getElementById("goNote").textContent=note;
+
+    /* full play-by-play, read at your own pace */
+    var fr=document.getElementById("fullReview");fr.innerHTML="";
+    state.rounds.forEach(function(rd,i){
+      if(rd.results.length===0) return;
+      var head=document.createElement("div");
+      head.className="fr-round";
+      head.textContent="Round "+(i+1)+" · "+rd.def.name;
+      fr.appendChild(head);
+      rd.results.forEach(function(r){
+        var row=document.createElement("div");
+        row.className="debrief-row "+(r.correct?"right":"wrong");
+        row.innerHTML='<div class="d-head"><span class="d-mark">'+(r.correct?"✔":"✘")+'</span><span>'+(r.item.flaw?"FLAW: ":"CLEAN: ")+r.item.cat+" · "+r.item.t+'</span></div>'+
+          '<div class="d-why">'+r.item.why+'</div>';
+        fr.appendChild(row);
+      });
+    });
+  }, reason==="complete"?300:900);
+}
+
+function restart(){
+  document.querySelectorAll(".mole").forEach(function(m){m.remove();});
+  startGame();
+}
+</script>
+</body>
+</html>
