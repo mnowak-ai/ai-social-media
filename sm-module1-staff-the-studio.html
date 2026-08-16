@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Staff the Studio | AI in Social Media Knowledge Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --purple-deep:#2A0B47;
+    --purple-mid:#4A1478;
+    --purple-bright:#7B2FBE;
+    --gold:#E9A23B;
+    --ink:#2A0B47;
+    --body:#3d2b52;
+    --line:#e8e0f2;
+    --wash:#f7f4fb;
+    --good:#1d7a4f;
+    --good-wash:#e9f6ef;
+    --bad:#b3352c;
+    --bad-wash:#fdeeec;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    font-family:'DM Sans',sans-serif;
+    background:#ffffff;
+    color:var(--body);
+    line-height:1.6;
+    font-size:17px;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:32px 20px 80px;}
+
+  .fade-in{opacity:0;transform:translateY(14px);animation:fadeUp .5s ease forwards;}
+  @keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
+  @media (prefers-reduced-motion: reduce){
+    .fade-in{animation:none;opacity:1;transform:none;}
+    *{transition:none !important;}
+  }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--purple-bright);font-weight:600;margin-bottom:10px;
+  }
+  h1,h2{font-family:'Fraunces',serif;color:var(--ink);line-height:1.15;}
+  h1{font-size:clamp(30px,6vw,44px);font-weight:700;margin-bottom:14px;}
+  h2{font-size:clamp(22px,4.4vw,30px);font-weight:600;margin-bottom:10px;}
+  p.lede{font-size:18px;max-width:640px;}
+
+  /* ---------- top bar / progress ---------- */
+  .hud{
+    display:none;
+    position:sticky;top:0;z-index:20;
+    background:#ffffff;border-bottom:1px solid var(--line);
+    padding:12px 20px;
+  }
+  .hud-inner{max-width:860px;margin:0 auto;display:flex;align-items:center;gap:14px;}
+  .hud-label{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;
+    letter-spacing:.08em;color:var(--purple-mid);white-space:nowrap;
+  }
+  .bar{flex:1;height:8px;background:var(--wash);border-radius:99px;overflow:hidden;}
+  .bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--purple-bright),var(--gold));border-radius:99px;transition:width .35s ease;}
+  .hud-score{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;
+    color:var(--ink);white-space:nowrap;
+  }
+
+  /* ---------- screens ---------- */
+  .screen{display:none;}
+  .screen.active{display:block;}
+
+  /* ---------- intro ---------- */
+  .brief-card{
+    border:1px solid var(--line);border-radius:16px;padding:26px 24px;
+    background:var(--wash);margin:28px 0;
+  }
+  .brief-card h2{font-size:20px;margin-bottom:8px;}
+  .brief-line{display:flex;gap:12px;align-items:flex-start;margin-top:14px;}
+  .brief-dot{
+    flex:0 0 auto;width:28px;height:28px;border-radius:8px;
+    background:var(--purple-deep);color:#fff;display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;margin-top:2px;
+  }
+  .rules{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:12px;margin:26px 0;
+  }
+  .rule{
+    border:1px solid var(--line);border-radius:12px;padding:16px;
+  }
+  .rule b{display:block;font-family:'Fraunces',serif;color:var(--ink);font-size:18px;margin-bottom:2px;}
+  .rule span{font-size:14px;}
+
+  /* ---------- buttons ---------- */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-height:52px;padding:14px 30px;border-radius:12px;border:none;
+    font-family:'DM Sans',sans-serif;font-size:17px;font-weight:700;cursor:pointer;
+    background:var(--purple-deep);color:#fff;transition:transform .12s ease, background .15s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .btn:hover{background:var(--purple-mid);}
+  .btn:active{transform:scale(.98);}
+  .btn.gold{background:var(--gold);color:var(--purple-deep);}
+  .btn.gold:hover{background:#f0b055;}
+  .btn.ghost{background:#fff;color:var(--purple-mid);border:2px solid var(--purple-mid);}
+  .btn.ghost:hover{background:var(--wash);}
+  .btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px;}
+
+  /* ---------- round header ---------- */
+  .round-head{margin-bottom:22px;}
+  .round-chip{
+    display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:12px;
+    font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+    background:var(--purple-deep);color:var(--gold);
+    padding:6px 12px;border-radius:6px;margin-bottom:12px;
+  }
+  .round-sub{max-width:620px;}
+
+  /* ---------- question card ---------- */
+  .qcard{
+    border:1px solid var(--line);border-radius:16px;padding:24px 22px;
+    box-shadow:0 4px 20px rgba(42,11,71,.06);
+  }
+  .q-count{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;
+    letter-spacing:.08em;color:var(--purple-bright);margin-bottom:10px;text-transform:uppercase;
+  }
+  .q-text{
+    font-family:'Fraunces',serif;font-size:clamp(19px,3.6vw,23px);
+    font-weight:600;color:var(--ink);line-height:1.3;margin-bottom:18px;
+  }
+  .q-context{
+    font-size:14px;font-family:'IBM Plex Mono',monospace;color:var(--purple-mid);
+    background:var(--wash);border-radius:8px;padding:10px 14px;margin-bottom:16px;
+    border-left:3px solid var(--gold);
+  }
+  .opts{display:grid;gap:10px;}
+  .opts.two-col{grid-template-columns:1fr 1fr;}
+  @media (max-width:520px){.opts.two-col{grid-template-columns:1fr;}}
+  .opt{
+    width:100%;text-align:left;min-height:52px;padding:14px 16px;
+    border:2px solid var(--line);border-radius:12px;background:#fff;
+    font-family:'DM Sans',sans-serif;font-size:16px;font-weight:500;color:var(--ink);
+    cursor:pointer;transition:border-color .12s ease, background .12s ease, transform .1s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .opt:hover{border-color:var(--purple-bright);background:var(--wash);}
+  .opt:active{transform:scale(.99);}
+  .opt:focus-visible{outline:3px solid var(--gold);outline-offset:2px;}
+  .opt.correct{border-color:var(--good);background:var(--good-wash);}
+  .opt.wrong{border-color:var(--bad);background:var(--bad-wash);}
+  .opt.dim{opacity:.45;pointer-events:none;}
+  .opt[disabled]{cursor:default;}
+
+  .lane-opt{display:flex;align-items:center;gap:10px;justify-content:center;text-align:center;font-weight:700;}
+  .lane-key{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;
+    background:var(--purple-deep);color:#fff;border-radius:5px;padding:2px 7px;
+  }
+
+  /* ---------- feedback ---------- */
+  .feedback{
+    margin-top:16px;border-radius:12px;padding:16px;display:none;
+  }
+  .feedback.show{display:block;animation:fadeUp .3s ease forwards;}
+  .feedback.good{background:var(--good-wash);border:1px solid #bfe4d0;}
+  .feedback.bad{background:var(--bad-wash);border:1px solid #f2c6c2;}
+  .fb-tag{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;
+    letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;
+  }
+  .feedback.good .fb-tag{color:var(--good);}
+  .feedback.bad .fb-tag{color:var(--bad);}
+  .fb-text{font-size:15px;color:var(--body);}
+  .fb-next{margin-top:14px;}
+
+  /* ---------- roster strip ---------- */
+  .roster{
+    display:flex;gap:8px;flex-wrap:wrap;margin:24px 0 8px;
+  }
+  .seat{
+    width:34px;height:34px;border-radius:9px;border:2px dashed var(--line);
+    display:flex;align-items:center;justify-content:center;
+    font-size:16px;transition:all .25s ease;background:#fff;
+  }
+  .seat.filled{border:2px solid var(--gold);background:var(--purple-deep);}
+  .seat.missed{border:2px solid var(--line);background:var(--wash);}
+  .roster-label{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--purple-mid);margin-bottom:8px;
+  }
+
+  /* ---------- round intro interstitial ---------- */
+  .interstitial{
+    text-align:center;padding:40px 20px;
+  }
+  .big-emoji{font-size:52px;margin-bottom:14px;}
+
+  /* ---------- results ---------- */
+  .result-hero{text-align:center;padding:20px 0 8px;}
+  .ring-wrap{position:relative;width:170px;height:170px;margin:22px auto;}
+  .ring-wrap svg{transform:rotate(-90deg);}
+  .ring-bg{fill:none;stroke:var(--wash);stroke-width:14;}
+  .ring-val{fill:none;stroke:url(#gradRing);stroke-width:14;stroke-linecap:round;
+    stroke-dasharray:439.8;stroke-dashoffset:439.8;transition:stroke-dashoffset 1s ease .2s;}
+  .ring-num{
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+  }
+  .ring-num b{font-family:'Fraunces',serif;font-size:40px;color:var(--ink);line-height:1;}
+  .ring-num span{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--purple-mid);margin-top:4px;}
+  .verdict{
+    display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:13px;
+    font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    padding:8px 18px;border-radius:99px;margin-bottom:10px;
+  }
+  .verdict.pass{background:var(--good-wash);color:var(--good);}
+  .verdict.fail{background:var(--bad-wash);color:var(--bad);}
+  .breakdown{
+    margin:28px 0;display:grid;gap:10px;
+  }
+  .bd-row{
+    display:flex;align-items:center;gap:12px;border:1px solid var(--line);
+    border-radius:12px;padding:14px 16px;
+  }
+  .bd-name{flex:1;font-weight:700;color:var(--ink);font-size:15px;}
+  .bd-name small{display:block;font-weight:400;color:var(--body);font-size:13px;}
+  .bd-score{
+    font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:var(--purple-mid);
+    white-space:nowrap;
+  }
+  .result-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px;}
+  .takeaway{
+    margin-top:34px;border-left:4px solid var(--gold);background:var(--wash);
+    border-radius:0 12px 12px 0;padding:18px 20px;
+  }
+  .takeaway b{font-family:'Fraunces',serif;color:var(--ink);font-size:18px;display:block;margin-bottom:4px;}
+</style>
+</head>
+<body>
+
+<!-- HUD -->
+<div class="hud" id="hud">
+  <div class="hud-inner">
+    <span class="hud-label" id="hudRound">Round 1</span>
+    <div class="bar"><div class="bar-fill" id="barFill"></div></div>
+    <span class="hud-score" id="hudScore">0 hires</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="screen active" id="scr-intro">
+    <div class="fade-in">
+      <div class="eyebrow">AI in Social Media &middot; Module 1 Knowledge Check</div>
+      <h1>Staff the Studio</h1>
+      <p class="lede">Copper Kettle Coffee has 14 locations, zero social media presence, and a budget to fix that. They hired you to build their first social team. Every right answer earns a hire. Get the answers wrong and the seats stay empty.</p>
+    </div>
+
+    <div class="brief-card fade-in" style="animation-delay:.1s">
+      <h2>Your mission brief</h2>
+      <div class="brief-line"><div class="brief-dot">1</div><p><b>Roll the Credits.</b> Prove you know who really makes a video happen.</p></div>
+      <div class="brief-line"><div class="brief-dot">2</div><p><b>Sort the Hires.</b> Place six job candidates into the right lane.</p></div>
+      <div class="brief-line"><div class="brief-dot">3</div><p><b>AI or Human?</b> Decide which tasks go to the tools and which stay with people.</p></div>
+      <div class="brief-line"><div class="brief-dot">4</div><p><b>Know the Lanes.</b> Show you understand how the four lanes really work.</p></div>
+    </div>
+
+    <div class="rules fade-in" style="animation-delay:.2s">
+      <div class="rule"><b>18 decisions</b><span>Four rounds, about 4 minutes</span></div>
+      <div class="rule"><b>80% to pass</b><span>You need 15 correct hires</span></div>
+      <div class="rule"><b>Learn as you go</b><span>Every miss explains why</span></div>
+    </div>
+
+    <button class="btn gold fade-in" style="animation-delay:.3s" onclick="startGame()">Take the job</button>
+  </section>
+
+  <!-- ============ ROUND INTERSTITIAL ============ -->
+  <section class="screen" id="scr-inter">
+    <div class="interstitial fade-in">
+      <div class="big-emoji" id="interEmoji">🎬</div>
+      <div class="round-chip" id="interChip">Round 1 of 4</div>
+      <h2 id="interTitle">Roll the Credits</h2>
+      <p class="round-sub" id="interSub" style="margin:10px auto 24px;"></p>
+      <button class="btn" onclick="beginRound()">Start round</button>
+    </div>
+  </section>
+
+  <!-- ============ QUESTION ============ -->
+  <section class="screen" id="scr-q">
+    <div class="roster-label">Studio roster</div>
+    <div class="roster" id="roster"></div>
+
+    <div class="qcard fade-in" id="qcard">
+      <div class="q-count" id="qCount"></div>
+      <div class="q-context" id="qContext" style="display:none;"></div>
+      <div class="q-text" id="qText"></div>
+      <div class="opts" id="opts"></div>
+      <div class="feedback" id="feedback">
+        <div class="fb-tag" id="fbTag"></div>
+        <div class="fb-text" id="fbText"></div>
+        <div class="fb-next"><button class="btn" id="nextBtn" onclick="nextQuestion()">Next</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section class="screen" id="scr-results">
+    <div class="result-hero fade-in">
+      <div class="verdict" id="verdict"></div>
+      <h1 id="resultTitle"></h1>
+      <p class="lede" id="resultSub" style="margin:0 auto;"></p>
+      <div class="ring-wrap">
+        <svg width="170" height="170" viewBox="0 0 170 170">
+          <defs>
+            <linearGradient id="gradRing" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#7B2FBE"/>
+              <stop offset="100%" stop-color="#E9A23B"/>
+            </linearGradient>
+          </defs>
+          <circle class="ring-bg" cx="85" cy="85" r="70"></circle>
+          <circle class="ring-val" id="ringVal" cx="85" cy="85" r="70"></circle>
+        </svg>
+        <div class="ring-num"><b id="ringPct">0%</b><span id="ringCount"></span></div>
+      </div>
+    </div>
+
+    <div class="breakdown" id="breakdown"></div>
+
+    <div class="result-actions">
+      <button class="btn ghost" onclick="restart()" id="retryBtn">Play again</button>
+    </div>
+
+    <div class="takeaway fade-in" id="takeaway">
+      <b>Take this with you</b>
+      <span id="takeawayText"></span>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* =====================================================
+   STAFF THE STUDIO
+   Module 1 knowledge check, AI in Social Media
+   18 items, pass = 15 (80%+), shuffles on every attempt
+===================================================== */
+
+var LANES = [
+  {key:"C", name:"Creative"},
+  {key:"S", name:"Strategic"},
+  {key:"A", name:"Analytical"},
+  {key:"B", name:"Business"}
+];
+
+var ROUNDS = [
+  {
+    id:"credits",
+    emoji:"🎬",
+    title:"Roll the Credits",
+    sub:"Copper Kettle wants a launch video like the sneaker one that got 2.1 million views. Before you build the team, prove you understand who was really behind that video.",
+    type:"mcq",
+    items:[
+      {
+        q:"Out of the 50 million people who call themselves creators, about how many earn a full time living from it?",
+        opts:[
+          {t:"About 2 million", ok:true},
+          {t:"About 25 million", ok:false},
+          {t:"About 10 million", ok:false},
+          {t:"About 48 million", ok:false}
+        ],
+        why:"Only about 2 million, roughly 4 out of every 100. That is why the real opportunity is in the jobs around the camera, not just in front of it."
+      },
+      {
+        q:"The sneaker video credited nine paid roles. How many of them appeared on screen?",
+        opts:[
+          {t:"Just one", ok:true},
+          {t:"Three", ok:false},
+          {t:"Five", ok:false},
+          {t:"All nine", ok:false}
+        ],
+        why:"One person was on camera. The other eight, from the hook writer to the analyst, worked completely off screen. Eight paychecks you never see."
+      },
+      {
+        q:"Someone answered all 1,900 comments and found the twelve people asking about sizing. Which role was that?",
+        opts:[
+          {t:"Community manager", ok:true},
+          {t:"Analyst", ok:false},
+          {t:"Hook writer", ok:false},
+          {t:"Videographer", ok:false}
+        ],
+        why:"That is the community manager. AI can group thousands of comments by topic instantly, but writing back to a frustrated customer is still a person's job."
+      },
+      {
+        q:"A hospital, a community college, and a fire department all pay someone to run their social media. What are those jobs usually titled?",
+        opts:[
+          {t:"Coordinator, specialist, or communications assistant", ok:true},
+          {t:"Influencer", ok:false},
+          {t:"Content creator", ok:false},
+          {t:"Social media star", ok:false}
+        ],
+        why:"Most of these jobs are never advertised as social media jobs. They hide under titles like coordinator, specialist, or communications assistant, which is exactly why people miss them."
+      }
+    ]
+  },
+  {
+    id:"sort",
+    emoji:"🗂️",
+    title:"Sort the Hires",
+    sub:"Six candidates just applied. Place each one in the lane where their work belongs. Remember: Creative makes it, Strategic decides it, Analytical measures it, Business handles the money and the deals.",
+    type:"lane",
+    items:[
+      {
+        q:"Video Editor",
+        hint:"Cuts raw footage into short video that holds attention",
+        lane:"C",
+        why:"Editors make the thing itself, so they belong in Creative. Other lanes decide what should exist or whether it worked. This lane makes it exist."
+      },
+      {
+        q:"Social Media Manager",
+        hint:"Decides what gets posted, when, where, and in what voice",
+        lane:"S",
+        why:"The social media manager owns the plan and answers for it. Deciding what gets made is Strategic work, not making it."
+      },
+      {
+        q:"Attribution Analyst",
+        hint:"Figures out which thing a customer saw actually caused them to buy",
+        lane:"A",
+        why:"Answering whether something worked, and proving it with data, is Analytical work. It is also one of the highest paying starting points in that lane."
+      },
+      {
+        q:"Partnerships Manager",
+        hint:"Finds and closes deals with creators, brands, and platforms",
+        lane:"B",
+        why:"Deals, negotiation, and money live in the Business lane. It carries the most financial risk, which is why it starts at the highest pay."
+      },
+      {
+        q:"Social Copywriter",
+        hint:"Writes the hooks and captions that make people stop scrolling",
+        lane:"C",
+        why:"Writing the words on screen is making the thing, so it is Creative. AI can draft forty hooks in a minute, but picking the one that sounds human is the skill."
+      },
+      {
+        q:"Paid Media Buyer",
+        hint:"Decides where the advertising money goes, then defends it with results",
+        lane:"B",
+        why:"Deciding where money goes is a Business call. The ad platform optimizes automatically, but a person sets the limits and owns the outcome."
+      }
+    ]
+  },
+  {
+    id:"aihuman",
+    emoji:"⚖️",
+    title:"AI or Human?",
+    sub:"Copper Kettle's owner wants to know what the AI tools will handle and what still needs a person on payroll. Call each task.",
+    type:"mcq",
+    twoCol:true,
+    items:[
+      {
+        q:"Write 40 different hook options for a video in under a minute.",
+        opts:[
+          {t:"🤖 AI handles this", ok:true},
+          {t:"🧑 A person keeps this", ok:false}
+        ],
+        why:"Generating options is exactly what AI is good at. The human skill is recognizing which one of the forty sounds like a real person said it."
+      },
+      {
+        q:"Approve a post before it goes out under the company's name.",
+        opts:[
+          {t:"🧑 A person keeps this", ok:true},
+          {t:"🤖 AI handles this", ok:false}
+        ],
+        why:"Approving something the company will answer for stays with a person. AI can draft it, but accountability is not something you hand to a tool."
+      },
+      {
+        q:"Group thousands of comments by topic and mood, instantly.",
+        opts:[
+          {t:"🤖 AI handles this", ok:true},
+          {t:"🧑 A person keeps this", ok:false}
+        ],
+        why:"Sorting and summarizing at scale is AI's job now. The person steps in for what comes next, like writing back to someone who is upset."
+      },
+      {
+        q:"Decide whether a creator can be trusted before signing a partnership deal.",
+        opts:[
+          {t:"🧑 A person keeps this", ok:true},
+          {t:"🤖 AI handles this", ok:false}
+        ],
+        why:"AI can scan thousands of accounts and shortlist matches, but judging whether a person is trustworthy is a human call every single time."
+      }
+    ]
+  },
+  {
+    id:"lanes",
+    emoji:"🧭",
+    title:"Know the Lanes",
+    sub:"Last round. The owner asks smart questions about where to start and what to expect. Answer like someone who read the map.",
+    type:"mcq",
+    items:[
+      {
+        q:"Which lane is the fastest to enter, because nobody has to give you permission to build a portfolio?",
+        opts:[
+          {t:"Creative", ok:true},
+          {t:"Strategic", ok:false},
+          {t:"Analytical", ok:false},
+          {t:"Business", ok:false}
+        ],
+        why:"Creative is the fastest door. You can build a portfolio this month with a phone and free software, and the portfolio is the only thing hiring managers really look at."
+      },
+      {
+        q:"Which lane is the least crowded, because far more people want to make videos than read spreadsheets?",
+        opts:[
+          {t:"Analytical", ok:true},
+          {t:"Creative", ok:false},
+          {t:"Strategic", ok:false},
+          {t:"Business", ok:false}
+        ],
+        why:"Analytical is the least crowded lane. Thinner competition means pay tends to start higher, which makes it worth a serious look if numbers do not scare you."
+      },
+      {
+        q:"Which lane pays the most early on, because handling money and relationships carries real risk?",
+        opts:[
+          {t:"Business", ok:true},
+          {t:"Creative", ok:false},
+          {t:"Analytical", ok:false},
+          {t:"Strategic", ok:false}
+        ],
+        why:"Business starts at the highest pay band because roles that carry financial risk pay for it. The tradeoff is that trust takes years to build, not a weekend."
+      },
+      {
+        q:"Which lane do most people land in as a second job, after working in one of the other three first?",
+        opts:[
+          {t:"Strategic", ok:true},
+          {t:"Creative", ok:false},
+          {t:"Analytical", ok:false},
+          {t:"Business", ok:false}
+        ],
+        why:"Strategic is where the other lanes meet. Good judgment about what to make comes from having made the work yourself and watched it succeed or fail."
+      }
+    ]
+  }
+];
+
+var TOTAL = 18;
+var PASS = 15;
+
+var state = {
+  roundIdx:0,
+  itemIdx:0,
+  score:0,
+  answered:0,
+  roundScores:[],
+  order:[]
+};
+
+function shuffle(arr){
+  var a = arr.slice();
+  for(var i=a.length-1;i>0;i--){
+    var j = Math.floor(Math.random()*(i+1));
+    var tmp=a[i]; a[i]=a[j]; a[j]=tmp;
+  }
+  return a;
+}
+
+function show(id){
+  var scrs = document.querySelectorAll(".screen");
+  for(var i=0;i<scrs.length;i++){scrs[i].classList.remove("active");}
+  document.getElementById(id).classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function buildOrder(){
+  state.order = ROUNDS.map(function(r){
+    return { round:r, items: shuffle(r.items) };
+  });
+}
+
+function startGame(){
+  state.roundIdx=0; state.itemIdx=0; state.score=0; state.answered=0;
+  state.roundScores = ROUNDS.map(function(r){return {name:r.title, got:0, of:r.items.length};});
+  buildOrder();
+  buildRoster();
+  document.getElementById("hud").style.display="block";
+  updateHud();
+  showInterstitial();
+}
+
+function showInterstitial(){
+  var r = state.order[state.roundIdx].round;
+  document.getElementById("interEmoji").textContent = r.emoji;
+  document.getElementById("interChip").textContent = "Round " + (state.roundIdx+1) + " of 4";
+  document.getElementById("interTitle").textContent = r.title;
+  document.getElementById("interSub").textContent = r.sub;
+  show("scr-inter");
+}
+
+function beginRound(){
+  state.itemIdx = 0;
+  show("scr-q");
+  renderQuestion();
+}
+
+function buildRoster(){
+  var el = document.getElementById("roster");
+  el.innerHTML = "";
+  for(var i=0;i<TOTAL;i++){
+    var d = document.createElement("div");
+    d.className = "seat";
+    d.setAttribute("data-i", i);
+    el.appendChild(d);
+  }
+}
+
+function fillSeat(correct){
+  var seats = document.querySelectorAll(".seat");
+  var s = seats[state.answered-1];
+  if(!s) return;
+  if(correct){ s.classList.add("filled"); s.textContent = "👤"; }
+  else { s.classList.add("missed"); s.textContent = "·"; }
+}
+
+function updateHud(){
+  var pct = Math.round((state.answered / TOTAL) * 100);
+  document.getElementById("barFill").style.width = pct + "%";
+  document.getElementById("hudRound").textContent = "Round " + (state.roundIdx+1) + " · " + state.order[state.roundIdx].round.title;
+  document.getElementById("hudScore").textContent = state.score + (state.score===1 ? " hire" : " hires");
+}
+
+function renderQuestion(){
+  var block = state.order[state.roundIdx];
+  var r = block.round;
+  var item = block.items[state.itemIdx];
+
+  var card = document.getElementById("qcard");
+  card.classList.remove("fade-in");
+  void card.offsetWidth;
+  card.classList.add("fade-in");
+
+  document.getElementById("qCount").textContent =
+    r.title + " · Decision " + (state.answered+1) + " of " + TOTAL;
+
+  var ctx = document.getElementById("qContext");
+  if(r.type==="lane" && item.hint){
+    ctx.style.display = "block";
+    ctx.textContent = item.hint;
+  } else {
+    ctx.style.display = "none";
+  }
+
+  document.getElementById("qText").textContent =
+    r.type==="lane" ? "Where does the " + item.q + " belong?" : item.q;
+
+  var optsEl = document.getElementById("opts");
+  optsEl.innerHTML = "";
+  optsEl.className = "opts" + ((r.twoCol || r.type==="lane") ? " two-col" : "");
+
+  var options;
+  if(r.type==="lane"){
+    options = LANES.map(function(l){
+      return {t:l.name, key:l.key, ok:(l.key===item.lane), lane:true};
+    });
+    /* lanes stay in fixed order so learners build a stable mental map */
+  } else {
+    options = shuffle(item.opts);
+  }
+
+  options.forEach(function(o){
+    var b = document.createElement("button");
+    b.className = "opt" + (o.lane ? " lane-opt" : "");
+    if(o.lane){
+      b.innerHTML = '<span class="lane-key">'+o.key+'</span>' + o.t;
+    } else {
+      b.textContent = o.t;
+    }
+    b.onclick = function(){ answer(b, o, item); };
+    optsEl.appendChild(b);
+  });
+
+  var fb = document.getElementById("feedback");
+  fb.className = "feedback";
+}
+
+function answer(btn, opt, item){
+  var buttons = document.querySelectorAll("#opts .opt");
+  for(var i=0;i<buttons.length;i++){ buttons[i].disabled = true; }
+
+  state.answered++;
+  var correct = !!opt.ok;
+
+  if(correct){
+    btn.classList.add("correct");
+    for(var j=0;j<buttons.length;j++){ if(buttons[j]!==btn) buttons[j].classList.add("dim"); }
+    state.score++;
+    state.roundScores[state.roundIdx].got++;
+  } else {
+    btn.classList.add("wrong");
+    for(var k=0;k<buttons.length;k++){
+      var bb = buttons[k];
+      var isRight = bb.classList.contains("lane-opt")
+        ? (bb.textContent.indexOf(laneName(item.lane)) !== -1)
+        : (bb.textContent === rightText(item));
+      if(isRight){ bb.classList.add("correct"); }
+      else if(bb!==btn){ bb.classList.add("dim"); }
+    }
+  }
+
+  fillSeat(correct);
+  updateHud();
+
+  var fb = document.getElementById("feedback");
+  document.getElementById("fbTag").textContent = correct ? "Hired · Good call" : "Seat stays empty";
+  document.getElementById("fbText").textContent = item.why;
+  fb.className = "feedback show " + (correct ? "good" : "bad");
+
+  var isLastOverall = (state.answered === TOTAL);
+  var isLastInRound = (state.itemIdx === state.order[state.roundIdx].items.length - 1);
+  document.getElementById("nextBtn").textContent =
+    isLastOverall ? "See your studio" : (isLastInRound ? "Next round" : "Next");
+}
+
+function laneName(key){
+  for(var i=0;i<LANES.length;i++){ if(LANES[i].key===key) return LANES[i].name; }
+  return "";
+}
+function rightText(item){
+  for(var i=0;i<item.opts.length;i++){ if(item.opts[i].ok) return item.opts[i].t; }
+  return "";
+}
+
+function nextQuestion(){
+  var block = state.order[state.roundIdx];
+  if(state.itemIdx < block.items.length - 1){
+    state.itemIdx++;
+    renderQuestion();
+  } else if(state.roundIdx < state.order.length - 1){
+    state.roundIdx++;
+    updateHud();
+    showInterstitial();
+  } else {
+    finish();
+  }
+}
+
+function finish(){
+  document.getElementById("hud").style.display="none";
+  var pct = Math.round((state.score/TOTAL)*100);
+  var pass = state.score >= PASS;
+
+  var v = document.getElementById("verdict");
+  v.textContent = pass ? "Passed · " + state.score + " of " + TOTAL : "Not yet · " + state.score + " of " + TOTAL;
+  v.className = "verdict " + (pass ? "pass" : "fail");
+
+  document.getElementById("resultTitle").textContent =
+    pass ? "The studio is staffed" : "The studio has empty seats";
+  document.getElementById("resultSub").textContent =
+    pass
+      ? "Copper Kettle Coffee has a working social team, and you clearly know how this industry is actually built."
+      : "You need 15 correct hires to pass. Check the round breakdown below to see where to review, then run it again. The questions will reshuffle.";
+
+  var circ = 2 * Math.PI * 70;
+  var ring = document.getElementById("ringVal");
+  ring.style.strokeDasharray = circ;
+  requestAnimationFrame(function(){
+    ring.style.strokeDashoffset = circ * (1 - (state.score/TOTAL));
+  });
+  document.getElementById("ringPct").textContent = pct + "%";
+  document.getElementById("ringCount").textContent = state.score + " of " + TOTAL + " hires";
+
+  var bd = document.getElementById("breakdown");
+  bd.innerHTML = "";
+  state.roundScores.forEach(function(rs, i){
+    var row = document.createElement("div");
+    row.className = "bd-row";
+    var reviewNote = "";
+    if(rs.got < rs.of){
+      var reviews = [
+        "Review: Everyone You Do Not See",
+        "Review: the four lane articles",
+        "Review: the Where AI Shows Up sections",
+        "Review: Four Paths Into the Same Industry"
+      ];
+      reviewNote = "<small>" + reviews[i] + "</small>";
+    } else {
+      reviewNote = "<small>Clean sweep</small>";
+    }
+    row.innerHTML =
+      '<div class="bd-name">' + ROUNDS[i].emoji + " " + rs.name + reviewNote + '</div>' +
+      '<div class="bd-score">' + rs.got + ' / ' + rs.of + '</div>';
+    bd.appendChild(row);
+  });
+
+  document.getElementById("takeawayText").textContent =
+    pass
+      ? "The camera points at one person. The paychecks go to a whole room. You just proved you know who is in that room, which lane each of them works in, and which parts of their jobs AI cannot take."
+      : "The camera points at one person, but the paychecks go to a whole room. Knowing who is in that room, and what AI can and cannot do for each of them, is the whole point of this module.";
+
+  document.getElementById("retryBtn").textContent = pass ? "Play again" : "Try again";
+  show("scr-results");
+}
+
+function restart(){
+  startGame();
+}
+</script>
+</body>
+</html>
