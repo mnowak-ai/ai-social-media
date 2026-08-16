@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Caption Invaders: Feed Defense | AI in Social Media</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --purple-deep:#2A0B47;
+    --purple-mid:#4A1478;
+    --purple-bright:#7B2FBE;
+    --gold:#E9A23B;
+    --ink:#2A0B47;
+    --body:#3d2b52;
+    --line:#e8e0f2;
+    --wash:#f7f4fb;
+    --good:#2ecc80;
+    --good-deep:#1d7a4f;
+    --bad:#ff5f52;
+    --bad-deep:#b3352c;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{font-family:'DM Sans',sans-serif;background:#fff;color:var(--body);line-height:1.55;font-size:17px;}
+  .wrap{max-width:860px;margin:0 auto;padding:24px 16px 60px;}
+
+  .fade-in{opacity:0;transform:translateY(14px);animation:fadeUp .5s ease forwards;}
+  @keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
+
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--purple-bright);font-weight:600;margin-bottom:10px;}
+  h1{font-family:'Fraunces',serif;color:var(--ink);font-size:clamp(30px,6vw,44px);font-weight:700;line-height:1.1;margin-bottom:12px;}
+  p.lede{font-size:18px;max-width:640px;}
+
+  .screen{display:none;}
+  .screen.active{display:block;}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:14px 28px;border-radius:12px;border:none;font-family:'DM Sans',sans-serif;font-size:17px;font-weight:700;cursor:pointer;background:var(--purple-deep);color:#fff;transition:transform .12s ease,background .15s ease;-webkit-tap-highlight-color:transparent;}
+  .btn:hover{background:var(--purple-mid);}
+  .btn:active{transform:scale(.97);}
+  .btn.gold{background:var(--gold);color:var(--purple-deep);}
+  .btn.gold:hover{background:#f0b055;}
+  .btn.ghost{background:#fff;color:var(--purple-mid);border:2px solid var(--purple-mid);}
+  .btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px;}
+
+  /* ---------- intro ---------- */
+  .rules-arcade{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:24px 0;}
+  @media(max-width:560px){.rules-arcade{grid-template-columns:1fr;}}
+  .rule-a{border:2px solid var(--line);border-radius:14px;padding:16px;display:flex;gap:12px;align-items:flex-start;}
+  .rule-a .ico{font-size:26px;line-height:1;}
+  .rule-a b{color:var(--ink);display:block;font-size:16px;}
+  .rule-a span{font-size:14px;}
+  .rule-a.shoot{border-color:var(--bad-deep);background:#fff6f5;}
+  .rule-a.spare{border-color:var(--good-deep);background:#f2fbf6;}
+
+  /* =========================================================
+     ARCADE CABINET
+  ========================================================= */
+  .cabinet{
+    background:var(--purple-deep);border-radius:20px;padding:12px;
+    box-shadow:0 16px 50px rgba(42,11,71,.35);
+  }
+  .marquee{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:6px 10px 12px;flex-wrap:wrap;
+  }
+  .marquee-title{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;}
+  .hud-stats{display:flex;gap:14px;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#fff;flex-wrap:wrap;}
+  .hud-stats .stat b{color:var(--gold);}
+  .hearts{letter-spacing:2px;font-size:15px;}
+
+  .playfield{
+    position:relative;background:linear-gradient(180deg,#1d0733 0%, #2A0B47 70%, #3a1160 100%);
+    border-radius:12px;overflow:hidden;height:520px;touch-action:manipulation;
+    border:2px solid var(--purple-mid);
+  }
+  @media(max-width:560px){.playfield{height:460px;}}
+
+  .stars{position:absolute;inset:0;pointer-events:none;opacity:.5;}
+  .star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;}
+
+  .feedline{
+    position:absolute;left:0;right:0;bottom:74px;height:3px;
+    background:repeating-linear-gradient(90deg,var(--gold) 0 12px,transparent 12px 22px);
+    opacity:.85;
+  }
+  .feedline-label{
+    position:absolute;right:8px;bottom:80px;font-family:'IBM Plex Mono',monospace;
+    font-size:10px;letter-spacing:.14em;color:var(--gold);opacity:.9;
+  }
+
+  /* invader tiles */
+  .inv{
+    position:absolute;max-width:78%;cursor:crosshair;
+    background:#fff;border-radius:12px;padding:9px 13px 8px;
+    font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;line-height:1.35;color:var(--ink);
+    box-shadow:0 4px 16px rgba(0,0,0,.35);border:2px solid var(--purple-bright);
+    -webkit-tap-highlight-color:transparent;user-select:none;
+  }
+  @media(max-width:560px){.inv{font-size:12px;}}
+  .inv::before{
+    content:"⌖ INCOMING";display:block;font-size:8.5px;letter-spacing:.16em;color:var(--purple-bright);
+    margin-bottom:3px;font-weight:700;
+  }
+  .inv .antenna{
+    position:absolute;top:-9px;left:16px;width:10px;height:9px;
+    border-left:2px solid var(--purple-bright);border-right:2px solid var(--purple-bright);
+  }
+  .inv.hit-lie{animation:explode .38s ease forwards;background:var(--good);border-color:var(--good);color:#06341d;}
+  .inv.hit-truth{animation:shieldFlash .5s ease forwards;background:var(--bad);border-color:var(--bad);color:#fff;}
+  .inv.landed-truth{animation:softLand .45s ease forwards;background:var(--good);border-color:var(--good);color:#06341d;}
+  .inv.landed-lie{animation:crash .45s ease forwards;background:var(--bad);border-color:var(--bad);color:#fff;}
+  @keyframes explode{0%{transform:scale(1);}40%{transform:scale(1.15) rotate(3deg);}100%{transform:scale(0) rotate(-14deg);opacity:0;}}
+  @keyframes shieldFlash{0%{transform:scale(1);}30%{transform:scale(1.08);}100%{transform:scale(.92);opacity:0;}}
+  @keyframes softLand{0%{transform:scale(1);}100%{transform:scale(.85) translateY(14px);opacity:0;}}
+  @keyframes crash{0%{transform:scale(1) rotate(0);}30%{transform:scale(1.1) rotate(-4deg);}100%{transform:scale(.7) rotate(8deg) translateY(20px);opacity:0;}}
+
+  .boom{
+    position:absolute;pointer-events:none;font-size:26px;z-index:6;
+    animation:boomUp .5s ease forwards;
+  }
+  @keyframes boomUp{0%{transform:scale(.4);opacity:1;}100%{transform:scale(1.6) translateY(-18px);opacity:0;}}
+
+  /* cannon */
+  .cannon{
+    position:absolute;bottom:10px;width:56px;height:52px;margin-left:-28px;z-index:5;
+    transition:left .14s ease;pointer-events:none;
+  }
+  .cannon svg{display:block;width:100%;height:100%;}
+  .laser{
+    position:absolute;width:4px;background:linear-gradient(180deg,var(--gold),#fff);
+    border-radius:2px;z-index:4;pointer-events:none;box-shadow:0 0 10px var(--gold);
+    animation:laserFade .18s ease forwards;
+  }
+  @keyframes laserFade{from{opacity:1;}to{opacity:0;}}
+
+  /* toast */
+  .toast{
+    position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:8;
+    max-width:92%;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;
+    padding:8px 14px;border-radius:99px;opacity:0;pointer-events:none;letter-spacing:.02em;
+  }
+  .toast.show{animation:toastPop 1.5s ease forwards;}
+  .toast.good{background:var(--good);color:#06341d;}
+  .toast.bad{background:var(--bad);color:#fff;}
+  @keyframes toastPop{0%{opacity:0;transform:translateX(-50%) translateY(-8px);}12%{opacity:1;transform:translateX(-50%) translateY(0);}80%{opacity:1;}100%{opacity:0;}}
+
+  /* wave banner + overlays inside playfield */
+  .overlay{
+    position:absolute;inset:0;z-index:10;display:none;
+    background:rgba(29,7,51,.94);color:#fff;overflow-y:auto;
+  }
+  .overlay.show{display:block;animation:fadeUp .3s ease forwards;}
+  .overlay-inner{padding:22px 18px 26px;max-width:520px;margin:0 auto;}
+  .ov-wavetag{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;margin-bottom:6px;}
+  .ov-title{font-family:'Fraunces',serif;font-size:26px;font-weight:700;color:#fff;margin-bottom:8px;line-height:1.15;}
+  .ov-sub{font-size:14.5px;color:#d9c9ee;margin-bottom:16px;}
+  .debrief-row{
+    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);
+    border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:13px;
+  }
+  .debrief-row .d-head{display:flex;gap:8px;align-items:flex-start;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:12.5px;color:#fff;}
+  .debrief-row .d-why{color:#cdb9e8;margin-top:4px;font-size:12.5px;padding-left:24px;}
+  .debrief-row.right .d-mark{color:var(--good);}
+  .debrief-row.wrong .d-mark{color:var(--bad);}
+  .overlay .btn{width:100%;margin-top:12px;}
+
+  /* boss */
+  .mothership{
+    position:absolute;top:14px;left:50%;transform:translateX(-50%);width:92%;max-width:460px;z-index:3;
+  }
+  .ship-body{
+    background:linear-gradient(180deg,#4A1478,#3a1160);border:2px solid var(--purple-bright);
+    border-radius:16px;padding:12px 14px;box-shadow:0 8px 30px rgba(0,0,0,.5);
+  }
+  .ship-name{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.18em;color:var(--gold);text-align:center;margin-bottom:6px;}
+  .ship-copy{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#fff;text-align:center;line-height:1.5;}
+  .bosshp{height:8px;background:rgba(255,255,255,.15);border-radius:99px;margin-top:8px;overflow:hidden;}
+  .bosshp-fill{height:100%;width:100%;background:linear-gradient(90deg,var(--bad),var(--gold));transition:width .3s ease;}
+  .pod{
+    position:absolute;cursor:crosshair;background:#fff;border:2px solid var(--gold);border-radius:10px;
+    padding:7px 10px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:700;color:var(--ink);
+    box-shadow:0 4px 14px rgba(0,0,0,.4);-webkit-tap-highlight-color:transparent;user-select:none;
+    animation:hover 2.4s ease-in-out infinite;
+  }
+  @keyframes hover{0%,100%{margin-top:0;}50%{margin-top:6px;}}
+  .pod.hit-lie{animation:explode .38s ease forwards;background:var(--good);border-color:var(--good);}
+  .pod.hit-truth{animation:shieldFlash .5s ease forwards;background:var(--bad);border-color:var(--bad);color:#fff;}
+  .boss-timer{
+    position:absolute;top:0;left:0;height:4px;background:var(--gold);z-index:9;transition:width 1s linear;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .fade-in{animation:none;opacity:1;transform:none;}
+    .pod{animation:none;}
+    .toast.show{animation:none;opacity:1;}
+    *{transition:none !important;}
+  }
+
+  /* ---------- results ---------- */
+  .gameover{
+    background:var(--purple-deep);border-radius:20px;padding:30px 22px;text-align:center;color:#fff;
+    box-shadow:0 16px 50px rgba(42,11,71,.35);
+  }
+  .go-title{font-family:'IBM Plex Mono',monospace;font-weight:700;letter-spacing:.2em;font-size:clamp(20px,5vw,30px);text-transform:uppercase;margin-bottom:6px;}
+  .go-title.win{color:var(--good);}
+  .go-title.lose{color:var(--bad);}
+  .go-sub{font-family:'Fraunces',serif;font-size:20px;color:var(--gold);margin-bottom:18px;}
+  .scoreboard{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:440px;margin:0 auto 18px;
+  }
+  @media(max-width:480px){.scoreboard{grid-template-columns:1fr 1fr;}}
+  .sb{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:12px 8px;}
+  .sb b{display:block;font-family:'IBM Plex Mono',monospace;font-size:24px;color:#fff;}
+  .sb span{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#cdb9e8;}
+  .go-verdict{
+    display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;padding:10px 18px;border-radius:8px;border:3px solid;transform:rotate(-3deg);margin-bottom:16px;
+  }
+  .go-verdict.pass{color:var(--good);border-color:var(--good);background:rgba(46,204,128,.12);}
+  .go-verdict.fail{color:var(--bad);border-color:var(--bad);background:rgba(255,95,82,.12);}
+  .wave-recap{max-width:440px;margin:0 auto 18px;text-align:left;}
+  .wr-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:9px 12px;margin-bottom:7px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;}
+  .wr-row .wr-name{flex:1;color:#fff;}
+  .wr-row .wr-score{color:var(--gold);font-weight:700;}
+  .go-note{max-width:480px;margin:0 auto 20px;font-size:14.5px;color:#e6dcf5;}
+  .go-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+  .insert-coin{animation:blink 1.2s steps(2) infinite;}
+  @keyframes blink{50%{opacity:.35;}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="screen active" id="scr-intro">
+    <div class="fade-in">
+      <div class="eyebrow">AI in Social Media &middot; Module 2 Knowledge Check</div>
+      <h1>Caption Invaders: Feed Defense</h1>
+      <p class="lede">Statements about AI tools are descending on the Prairie Gate feed. Some are true. Some are lies. Your cannon fires facts. You know what to do.</p>
+    </div>
+
+    <div class="rules-arcade fade-in" style="animation-delay:.1s">
+      <div class="rule-a shoot"><div class="ico">💥</div><div><b>SHOOT THE LIES</b><span>Tap a false statement to blast it before it reaches the feed. A lie that lands does real damage.</span></div></div>
+      <div class="rule-a spare"><div class="ico">🕊️</div><div><b>SPARE THE TRUTHS</b><span>True statements are friendly. Let them land in the feed. Shooting the truth costs you a heart.</span></div></div>
+      <div class="rule-a"><div class="ico">❤️</div><div><b>5 HEARTS</b><span>Every wrong call, shooting a truth or letting a lie land, costs one. Lose all five and the feed falls.</span></div></div>
+      <div class="rule-a"><div class="ico">👾</div><div><b>5 WAVES + BOSS</b><span>25 calls total. 20 right calls (80%) clears the module. The queue reshuffles every run.</span></div></div>
+    </div>
+
+    <p style="font-size:14px;color:#8a7a9e;margin-bottom:20px;" class="fade-in">Tap or click a statement to fire at it. Works with mouse or fingers. Between waves you get a debrief on every statement.</p>
+
+    <button class="btn gold fade-in" style="animation-delay:.2s" onclick="startGame()">🕹️ INSERT COIN</button>
+  </section>
+
+  <!-- ============ GAME ============ -->
+  <section class="screen" id="scr-game">
+    <div class="cabinet">
+      <div class="marquee">
+        <span class="marquee-title">👾 Caption Invaders</span>
+        <div class="hud-stats">
+          <span class="stat">WAVE <b id="hudWave">1/5</b></span>
+          <span class="stat">SCORE <b id="hudScore">0</b></span>
+          <span class="stat">ACC <b id="hudAcc">--%</b></span>
+          <span class="hearts" id="hudHearts">❤️❤️❤️❤️❤️</span>
+        </div>
+      </div>
+
+      <div class="playfield" id="playfield">
+        <div class="stars" id="stars"></div>
+        <div class="feedline"></div>
+        <div class="feedline-label">THE FEED ▼</div>
+        <div class="toast" id="toast"></div>
+        <div class="boss-timer" id="bossTimer" style="width:0;"></div>
+
+        <div class="cannon" id="cannon">
+          <svg viewBox="0 0 56 52" xmlns="http://www.w3.org/2000/svg">
+            <rect x="24" y="2" width="8" height="18" rx="3" fill="#E9A23B"/>
+            <rect x="14" y="18" width="28" height="14" rx="5" fill="#7B2FBE"/>
+            <rect x="6" y="30" width="44" height="16" rx="6" fill="#4A1478" stroke="#E9A23B" stroke-width="2"/>
+            <circle cx="28" cy="38" r="4" fill="#E9A23B"/>
+          </svg>
+        </div>
+
+        <!-- overlay: wave intro / debrief -->
+        <div class="overlay" id="overlay">
+          <div class="overlay-inner">
+            <div class="ov-wavetag" id="ovTag"></div>
+            <div class="ov-title" id="ovTitle"></div>
+            <div class="ov-sub" id="ovSub"></div>
+            <div id="ovBody"></div>
+            <button class="btn gold" id="ovBtn" onclick="overlayNext()">START WAVE</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section class="screen" id="scr-results">
+    <div class="gameover fade-in">
+      <div class="go-title" id="goTitle"></div>
+      <div class="go-sub" id="goSub"></div>
+      <div class="go-verdict" id="goVerdict"></div>
+      <div class="scoreboard">
+        <div class="sb"><b id="sbScore">0</b><span>Score</span></div>
+        <div class="sb"><b id="sbAcc">0%</b><span>Accuracy</span></div>
+        <div class="sb"><b id="sbCalls">0/25</b><span>Right calls</span></div>
+        <div class="sb"><b id="sbStreak">0</b><span>Best streak</span></div>
+        <div class="sb"><b id="sbHearts">0</b><span>Hearts left</span></div>
+        <div class="sb"><b id="sbBoss">--</b><span>Boss</span></div>
+      </div>
+      <div class="wave-recap" id="waveRecap"></div>
+      <div class="go-note" id="goNote"></div>
+      <div class="go-actions">
+        <button class="btn gold insert-coin" onclick="restart()">🕹️ INSERT COIN · PLAY AGAIN</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* =====================================================
+   CAPTION INVADERS: FEED DEFENSE
+   Module 2 knowledge check, AI in Social Media
+   Shoot false statements, spare true ones.
+   25 calls (20 wave statements + 5 boss pods), pass = 20
+===================================================== */
+
+var WAVES = [
+  {
+    name:"THE THREE GROUPS", tag:"WAVE 1 OF 5",
+    sub:"AI hit this industry in three places: video tools, image tools, and writing tools. Lies about the basics are inbound.",
+    review:"Three Ways AI Changed the Work",
+    items:[
+      {t:"Pulling clips from long video is a WRITING tool's job", lie:true,
+       why:"Clip finding lives in the video group. It scans footage for high energy moments. Writing tools only touch words."},
+      {t:"Thumbnails and post graphics come from IMAGE tools", lie:false,
+       why:"True. Still images, thumbnails, and design assets are the image group's whole job."},
+      {t:"AI output is finished work, ready to publish", lie:true,
+       why:"Everything AI makes is a draft. Treating output as final is the most common mistake across all three groups."},
+      {t:"AI sounds equally confident whether right or wrong", lie:false,
+       why:"True, and it is the most dangerous fact in this module. There is no tone change when a tool is guessing."}
+    ]
+  },
+  {
+    name:"TOOL LIMITS", tag:"WAVE 2 OF 5",
+    sub:"Every tool has a known breaking point. The lies in this wave want you to forget where they are.",
+    review:"Smarter Video Creation + Eye Catching Visuals",
+    items:[
+      {t:"Text inside AI generated images is always spelled right", lie:true,
+       why:"Words rendered inside generated images are still frequently misspelled or nonsense. Read every word, then add real text yourself."},
+      {t:"Auto captions fail most on names, numbers, and homophones", lie:false,
+       why:"True. For cups of flour instead of four. Those three categories are exactly where captions break, and where trust dies fastest."},
+      {t:"Clip tools cut based on what a person MEANT", lie:true,
+       why:"Tools cut on sound and vocal energy, not meaning. A clip can end mid thought and reverse what someone said."},
+      {t:"Count fingers and check hands before posting AI images", lie:false,
+       why:"True. Hands, limbs, and repeated objects are unreliable in generated images. Counting them is a publishing habit, not paranoia."}
+    ]
+  },
+  {
+    name:"CHATGPT", tag:"WAVE 3 OF 5",
+    sub:"The tool everyone has and almost nobody uses well. Know what it actually does, and what it never will.",
+    review:"ChatGPT: The One People Underuse",
+    items:[
+      {t:"ChatGPT can read a performance spreadsheet and find patterns", lie:false,
+       why:"True, and it is the most underused feature. Upload the export, ask which topics earned saves and shares, and it groups the posts."},
+      {t:"ChatGPT warns you when it is guessing", lie:true,
+       why:"It cannot flag which parts of its own output it is unsure about. Sourced facts and invented ones arrive in the identical tone."},
+      {t:"ChatGPT knows your audience and what happened at your org", lie:true,
+       why:"It knows nothing about your world. Your followers, last month's events, the words your community uses: you supply all of it."},
+      {t:"ChatGPT can argue AGAINST your campaign before launch", lie:false,
+       why:"True. Asking it to list objections and misreadings is cheap rehearsal for an expensive decision. Strategic people use this constantly."}
+    ]
+  },
+  {
+    name:"HEYGEN", tag:"WAVE 4 OF 5",
+    sub:"The only tool in the stack that manufactures versions of real human beings. The lies here have legal weight.",
+    review:"HeyGen: Video Without a Camera",
+    items:[
+      {t:"HeyGen turns a typed script into a presenter video", lie:false,
+       why:"True. That is its central job: script in, finished presenter video out, no camera, no shoot day."},
+      {t:"Avatar consent once covers every future script", lie:true,
+       why:"Permission to build an avatar is never permission to make it say anything. Every script gets approved separately, every time."},
+      {t:"Translated videos should be reviewed by a native speaker", lie:false,
+       why:"True. The tool handles the language, not the community. Technically correct can still be locally wrong."},
+      {t:"Talking photos need no label, they are just photos", lie:true,
+       why:"A talking photo manufactures a performance that never happened. It is the feature most likely to feel dishonest, and the label is mandatory."}
+    ]
+  },
+  {
+    name:"CANVA", tag:"WAVE 5 OF 5",
+    sub:"The production floor. Forty adequate designs a week, all matching. Final wave before the boss.",
+    review:"Canva: The Production Floor",
+    items:[
+      {t:"Bulk Create makes 200 graphics from one spreadsheet", lie:false,
+       why:"True. One design per spreadsheet row. Which is also why one typo in the source file becomes 200 typos in the output."},
+      {t:"Auto resizing never breaks a layout", lie:true,
+       why:"Reflowing moves elements. Text that fit a square can collide with a face in the vertical version. Every output gets looked at."},
+      {t:"An hour of brand kit setup improves every output after", lie:false,
+       why:"True. Stored colors, fonts, and voice samples are what stop output from looking like it came from a tool. It is the step most people skip."},
+      {t:"Canva will invent an original visual identity for you", lie:true,
+       why:"It produces competent work inside an existing style. It works from patterns, not intent, and will not make your organization recognizable."}
+    ]
+  }
+];
+
+/* boss pods: shoot the 3 claim-shapes (number, official name, superlative), spare the 2 plain facts */
+var BOSS = {
+  copy:"START A CAREER THAT PAYS. APPLY TO PRAIRIE GATE WELDING TODAY.",
+  pods:[
+    {t:"94% placement rate", lie:true,  why:"A precise number with no source on file. Numbers are the first shape invented claims take. Verify before it ships."},
+    {t:"National Welding Board approved", lie:true, why:"An official sounding body that does not exist. Official names are the second shape of invented claims."},
+    {t:"Best program in the Midwest", lie:true, why:"A superlative nobody measured. Superlatives are the third shape. Number, name, superlative: check all three, every time."},
+    {t:"Hands-on training", lie:false, why:"A plain description of the program. No number, no official body, no superlative. Nothing to verify beyond the catalog."},
+    {t:"Evening classes available", lie:false, why:"A checkable schedule fact, confirmed on the slip. Not every claim is a threat. Knowing which ones are is the skill."}
+  ]
+};
+
+var TOTAL_CALLS = 25;
+var PASS = 20;
+var MAX_HEARTS = 5;
+
+var state = {};
+var loopId = null;
+var lastTime = 0;
+var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function shuffle(arr){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
+  return a;
+}
+function show(id){
+  var s=document.querySelectorAll(".screen");
+  for(var i=0;i<s.length;i++){s[i].classList.remove("active");}
+  document.getElementById(id).classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function pf(){ return document.getElementById("playfield"); }
+
+/* ---------- stars ---------- */
+function buildStars(){
+  var el=document.getElementById("stars");el.innerHTML="";
+  for(var i=0;i<40;i++){
+    var s=document.createElement("div");s.className="star";
+    s.style.left=(Math.random()*100)+"%";
+    s.style.top=(Math.random()*100)+"%";
+    s.style.opacity=(0.25+Math.random()*0.7);
+    el.appendChild(s);
+  }
+}
+
+/* ---------- game state ---------- */
+function startGame(){
+  state = {
+    waveIdx:0, phase:"waveIntro",
+    hearts:MAX_HEARTS, score:0, streak:0, bestStreak:0,
+    right:0, resolved:0,
+    waves: WAVES.map(function(w){ return { def:w, items:shuffle(w.items), spawned:0, results:[], rightCount:0 }; }),
+    active:[], spawnTimer:0.6,
+    bossPods:[], bossKilled:0, bossTime:45, bossResults:[], bossDone:false, bossWon:false,
+    over:false
+  };
+  buildStars();
+  show("scr-game");
+  updateHud();
+  showWaveIntro();
+}
+
+function updateHud(){
+  document.getElementById("hudWave").textContent = state.phase==="boss" ? "BOSS" : Math.min(state.waveIdx+1,5)+"/5";
+  document.getElementById("hudScore").textContent = state.score;
+  document.getElementById("hudAcc").textContent = state.resolved? Math.round(100*state.right/state.resolved)+"%" : "--%";
+  var h="";
+  for(var i=0;i<MAX_HEARTS;i++){ h += i<state.hearts ? "❤️" : "🖤"; }
+  document.getElementById("hudHearts").textContent=h;
+}
+
+/* ---------- overlays ---------- */
+function showWaveIntro(){
+  var w=state.waves[state.waveIdx].def;
+  document.getElementById("ovTag").textContent=w.tag;
+  document.getElementById("ovTitle").textContent=w.name;
+  document.getElementById("ovSub").textContent=w.sub;
+  document.getElementById("ovBody").innerHTML="";
+  document.getElementById("ovBtn").textContent="START WAVE "+(state.waveIdx+1);
+  document.getElementById("overlay").classList.add("show");
+  state.phase="waveIntro";
+}
+
+function showDebrief(){
+  var wv=state.waves[state.waveIdx];
+  document.getElementById("ovTag").textContent="WAVE "+(state.waveIdx+1)+" CLEARED · DEBRIEF";
+  document.getElementById("ovTitle").textContent=wv.rightCount+" / "+wv.items.length+" right calls";
+  document.getElementById("ovSub").textContent="Every statement from that wave, and why:";
+  var html="";
+  wv.results.forEach(function(r){
+    html+='<div class="debrief-row '+(r.correct?"right":"wrong")+'">'+
+      '<div class="d-head"><span class="d-mark">'+(r.correct?"✔":"✘")+'</span><span>'+(r.item.lie?"LIE: ":"TRUE: ")+r.item.t+'</span></div>'+
+      '<div class="d-why">'+r.item.why+'</div></div>';
+  });
+  document.getElementById("ovBody").innerHTML=html;
+  var last = state.waveIdx===state.waves.length-1;
+  document.getElementById("ovBtn").textContent = last ? "⚠️ BOSS APPROACHING" : "NEXT WAVE";
+  document.getElementById("overlay").classList.add("show");
+  state.phase="debrief";
+}
+
+function showBossIntro(){
+  document.getElementById("ovTag").textContent="FINAL BOSS";
+  document.getElementById("ovTitle").textContent="THE MEGA AD";
+  document.getElementById("ovSub").textContent="An AI drafted advertisement with $400 of budget behind it. Five claims orbit the mothership. Three take the shapes invented claims always take: a number, an official sounding name, and a superlative. Shoot those three. Spare the two plain facts. You have 45 seconds.";
+  document.getElementById("ovBody").innerHTML="";
+  document.getElementById("ovBtn").textContent="ENGAGE";
+  document.getElementById("overlay").classList.add("show");
+  state.phase="bossIntro";
+}
+
+function overlayNext(){
+  document.getElementById("overlay").classList.remove("show");
+  if(state.phase==="waveIntro"){ beginWave(); }
+  else if(state.phase==="debrief"){
+    if(state.waveIdx===state.waves.length-1){ showBossIntro(); }
+    else { state.waveIdx++; updateHud(); showWaveIntro(); }
+  }
+  else if(state.phase==="bossIntro"){ beginBoss(); }
+}
+
+/* ---------- wave play ---------- */
+function beginWave(){
+  state.phase="wave";
+  state.active=[];
+  state.spawnTimer=0.5;
+  lastTime=performance.now();
+  if(loopId) cancelAnimationFrame(loopId);
+  loopId=requestAnimationFrame(loop);
+}
+
+function spawnInvader(){
+  var wv=state.waves[state.waveIdx];
+  if(wv.spawned>=wv.items.length) return;
+  var item=wv.items[wv.spawned];wv.spawned++;
+
+  var field=pf();
+  var el=document.createElement("div");
+  el.className="inv";
+  el.innerHTML='<span class="antenna"></span>'+item.t;
+  field.appendChild(el);
+
+  var w=el.offsetWidth;
+  var maxX=field.clientWidth-w-10;
+  var x=10+Math.random()*Math.max(10,maxX-10);
+  el.style.left=x+"px";
+  el.style.top="-60px";
+
+  var baseSpeed = 26 + state.waveIdx*5;          /* px per second */
+  if(reduced) baseSpeed = 18;
+  var inv={el:el,item:item,y:-60,x:x,speed:baseSpeed,resolvedFlag:false};
+
+  el.addEventListener("pointerdown",function(e){
+    e.preventDefault();
+    if(state.phase!=="wave"||inv.resolvedFlag) return;
+    fireAt(inv);
+  });
+
+  state.active.push(inv);
+}
+
+function loop(now){
+  if(state.over) return;
+  var dt=Math.min(0.05,(now-lastTime)/1000);
+  lastTime=now;
+
+  if(state.phase==="wave"){
+    var wv=state.waves[state.waveIdx];
+    state.spawnTimer-=dt;
+    var activeUnresolved=state.active.filter(function(i){return !i.resolvedFlag;}).length;
+    if(state.spawnTimer<=0 && activeUnresolved<2 && wv.spawned<wv.items.length){
+      spawnInvader();
+      state.spawnTimer=2.2 - state.waveIdx*0.15;
+    }
+
+    var feedY=pf().clientHeight-74-8;
+    state.active.forEach(function(inv){
+      if(inv.resolvedFlag) return;
+      inv.y+=inv.speed*dt;
+      inv.el.style.top=inv.y+"px";
+      if(inv.y+inv.el.offsetHeight>=feedY){
+        resolveLanding(inv);
+      }
+    });
+
+    if(wv.spawned>=wv.items.length && state.active.every(function(i){return i.resolvedFlag;})){
+      state.phase="betweenWave";
+      setTimeout(function(){ clearInvaders(); showDebrief(); }, 600);
+    }
+  }
+  else if(state.phase==="boss"){
+    state.bossTime-=dt;
+    var pct=Math.max(0,state.bossTime/45*100);
+    document.getElementById("bossTimer").style.width=pct+"%";
+    if(state.bossTime<=0){ bossTimeout(); return; }
+  }
+
+  loopId=requestAnimationFrame(loop);
+}
+
+function clearInvaders(){
+  state.active.forEach(function(i){ if(i.el.parentNode) i.el.parentNode.removeChild(i.el); });
+  state.active=[];
+}
+
+/* ---------- shooting ---------- */
+function fireAt(target){
+  var field=pf();
+  var rect=target.el.getBoundingClientRect();
+  var frect=field.getBoundingClientRect();
+  var tx=rect.left-frect.left+rect.width/2;
+  var ty=rect.top-frect.top+rect.height;
+
+  var cannon=document.getElementById("cannon");
+  cannon.style.left=tx+"px";
+
+  setTimeout(function(){
+    var laser=document.createElement("div");
+    laser.className="laser";
+    laser.style.left=(tx-2)+"px";
+    laser.style.top=ty+"px";
+    laser.style.height=(field.clientHeight-64-ty)+"px";
+    field.appendChild(laser);
+    setTimeout(function(){ if(laser.parentNode) laser.parentNode.removeChild(laser); },200);
+
+    resolveShot(target,tx,ty);
+  }, reduced?0:120);
+}
+
+function boomAt(x,y,emoji){
+  var field=pf();
+  var b=document.createElement("div");
+  b.className="boom";b.textContent=emoji;
+  b.style.left=(x-13)+"px";b.style.top=(y-13)+"px";
+  field.appendChild(b);
+  setTimeout(function(){ if(b.parentNode) b.parentNode.removeChild(b); },520);
+}
+
+/* ---------- resolution ---------- */
+function resolveShot(inv,x,y){
+  if(inv.resolvedFlag) return;
+  inv.resolvedFlag=true;
+  var correct = inv.item.lie===true;
+  if(correct){
+    inv.el.classList.add("hit-lie");
+    boomAt(x,y,"💥");
+    registerCall(true, "LIE DESTROYED +100", inv.item);
+  } else {
+    inv.el.classList.add("hit-truth");
+    boomAt(x,y,"🛡️");
+    registerCall(false, "THAT WAS TRUE! Truths land, you do not shoot them", inv.item);
+  }
+  state.waves[state.waveIdx].results.push({item:inv.item,correct:correct});
+  if(correct) state.waves[state.waveIdx].rightCount++;
+  setTimeout(function(){ if(inv.el.parentNode) inv.el.parentNode.removeChild(inv.el); },500);
+}
+
+function resolveLanding(inv){
+  if(inv.resolvedFlag) return;
+  inv.resolvedFlag=true;
+  var correct = inv.item.lie===false;
+  if(correct){
+    inv.el.classList.add("landed-truth");
+    registerCall(true, "TRUTH PUBLISHED +100", inv.item);
+  } else {
+    inv.el.classList.add("landed-lie");
+    registerCall(false, "A LIE HIT THE FEED", inv.item);
+  }
+  state.waves[state.waveIdx].results.push({item:inv.item,correct:correct});
+  if(correct) state.waves[state.waveIdx].rightCount++;
+  setTimeout(function(){ if(inv.el.parentNode) inv.el.parentNode.removeChild(inv.el); },500);
+}
+
+function registerCall(correct,msg,item){
+  state.resolved++;
+  if(correct){
+    state.right++; state.streak++;
+    if(state.streak>state.bestStreak) state.bestStreak=state.streak;
+    state.score += 100 + (state.streak>=3? (state.streak*10) : 0);
+    toast(msg + (state.streak>=3? " · 🔥x"+state.streak : ""), true);
+  } else {
+    state.streak=0;
+    state.hearts--;
+    toast("💔 "+msg, false);
+    if(state.hearts<=0){
+      updateHud();
+      endRun(false,"hearts");
+      return;
+    }
+  }
+  updateHud();
+}
+
+function toast(msg,good){
+  var t=document.getElementById("toast");
+  t.textContent=msg;
+  t.className="toast "+(good?"good":"bad");
+  void t.offsetWidth;
+  t.classList.add("show");
+}
+
+/* ---------- boss ---------- */
+function beginBoss(){
+  state.phase="boss";
+  updateHud();
+  var field=pf();
+
+  var ship=document.createElement("div");
+  ship.className="mothership";ship.id="mothership";
+  ship.innerHTML='<div class="ship-body"><div class="ship-name">☠️ THE MEGA AD ☠️</div>'+
+    '<div class="ship-copy">'+BOSS.copy+'</div>'+
+    '<div class="bosshp"><div class="bosshp-fill" id="bossHp"></div></div></div>';
+  field.appendChild(ship);
+
+  var pods=shuffle(BOSS.pods);
+  var positions=[
+    {l:"4%",  t:150},{l:"54%", t:140},{l:"10%", t:225},{l:"58%", t:220},{l:"30%", t:295}
+  ];
+  state.bossPods=[];
+  pods.forEach(function(p,i){
+    var el=document.createElement("div");
+    el.className="pod";
+    el.textContent=p.t;
+    el.style.left=positions[i].l;
+    el.style.top=positions[i].t+"px";
+    el.style.animationDelay=(i*0.3)+"s";
+    field.appendChild(el);
+    var pod={el:el,item:p,resolvedFlag:false};
+    el.addEventListener("pointerdown",function(e){
+      e.preventDefault();
+      if(state.phase!=="boss"||pod.resolvedFlag) return;
+      fireAtPod(pod);
+    });
+    state.bossPods.push(pod);
+  });
+
+  state.bossTime=45;
+  document.getElementById("bossTimer").style.width="100%";
+  lastTime=performance.now();
+  if(loopId) cancelAnimationFrame(loopId);
+  loopId=requestAnimationFrame(loop);
+}
+
+function fireAtPod(pod){
+  var field=pf();
+  var rect=pod.el.getBoundingClientRect();
+  var frect=field.getBoundingClientRect();
+  var tx=rect.left-frect.left+rect.width/2;
+  var ty=rect.top-frect.top+rect.height;
+  document.getElementById("cannon").style.left=tx+"px";
+  setTimeout(function(){
+    var laser=document.createElement("div");
+    laser.className="laser";
+    laser.style.left=(tx-2)+"px";laser.style.top=ty+"px";
+    laser.style.height=(field.clientHeight-64-ty)+"px";
+    field.appendChild(laser);
+    setTimeout(function(){ if(laser.parentNode) laser.parentNode.removeChild(laser); },200);
+    resolvePodShot(pod,tx,ty);
+  }, reduced?0:120);
+}
+
+function resolvePodShot(pod,x,y){
+  if(pod.resolvedFlag) return;
+  pod.resolvedFlag=true;
+  var correct=pod.item.lie===true;
+  state.bossResults.push({item:pod.item,correct:correct});
+  if(correct){
+    pod.el.classList.add("hit-lie");
+    boomAt(x,y,"💥");
+    state.bossKilled++;
+    document.getElementById("bossHp").style.width=(100-(state.bossKilled/3)*100)+"%";
+    registerCall(true,"CLAIM DESTROYED +100",pod.item);
+    if(state.hearts>0 && state.bossKilled>=3){ bossVictory(); }
+  } else {
+    pod.el.classList.add("hit-truth");
+    boomAt(x,y,"🛡️");
+    registerCall(false,"THAT CLAIM WAS SAFE",pod.item);
+  }
+  setTimeout(function(){ if(pod.el.parentNode) pod.el.parentNode.removeChild(pod.el); },500);
+}
+
+function bossVictory(){
+  if(state.over) return;
+  state.phase="bossEnd";
+  /* spared safe pods = correct calls */
+  state.bossPods.forEach(function(p){
+    if(!p.resolvedFlag){
+      p.resolvedFlag=true;
+      var correct = p.item.lie===false;
+      state.bossResults.push({item:p.item,correct:correct});
+      registerCall(correct, correct?"FACT SPARED +100":"A CLAIM SURVIVED", p.item);
+      if(p.el.parentNode) p.el.parentNode.removeChild(p.el);
+    }
+  });
+  state.bossWon=true;state.bossDone=true;
+  setTimeout(function(){ endRun(state.right>=PASS,"complete"); },900);
+}
+
+function bossTimeout(){
+  if(state.over) return;
+  state.phase="bossEnd";
+  state.bossPods.forEach(function(p){
+    if(!p.resolvedFlag){
+      p.resolvedFlag=true;
+      var correct = p.item.lie===false; /* spared safe = right, surviving lie = wrong */
+      state.bossResults.push({item:p.item,correct:correct});
+      state.resolved++;
+      if(correct){ state.right++; }
+      else { state.hearts=Math.max(0,state.hearts-1); }
+      if(p.el.parentNode) p.el.parentNode.removeChild(p.el);
+    }
+  });
+  state.bossDone=true;state.bossWon=false;
+  updateHud();
+  endRun(state.right>=PASS && state.hearts>0,"timeout");
+}
+
+/* ---------- end ---------- */
+function endRun(pass,reason){
+  if(state.over) return;
+  state.over=true;
+  if(loopId) cancelAnimationFrame(loopId);
+
+  /* count anything unresolved as wrong (e.g. died mid-wave) */
+  var unresolved = TOTAL_CALLS - state.resolved;
+  if(unresolved>0){ state.resolved=TOTAL_CALLS; }
+
+  var acc=Math.round(100*state.right/TOTAL_CALLS);
+  var finalPass = state.right>=PASS;
+
+  setTimeout(function(){
+    show("scr-results");
+    var win=document.getElementById("goTitle");
+    if(reason==="hearts"){ win.textContent="THE FEED HAS FALLEN";win.className="go-title lose"; }
+    else if(finalPass){ win.textContent="FEED DEFENDED";win.className="go-title win"; }
+    else { win.textContent="GAME OVER";win.className="go-title lose"; }
+
+    document.getElementById("goSub").textContent =
+      reason==="hearts" ? "You ran out of hearts. Too many wrong calls got through." :
+      (state.bossWon ? "The Mega Ad is down." : (state.bossDone ? "The Mega Ad escaped with claims intact." : ""));
+
+    var v=document.getElementById("goVerdict");
+    v.textContent = finalPass ? "MODULE PASSED · "+state.right+"/"+TOTAL_CALLS : "NOT PASSED · "+state.right+"/"+TOTAL_CALLS+" · NEED "+PASS;
+    v.className="go-verdict "+(finalPass?"pass":"fail");
+
+    document.getElementById("sbScore").textContent=state.score;
+    document.getElementById("sbAcc").textContent=acc+"%";
+    document.getElementById("sbCalls").textContent=state.right+"/"+TOTAL_CALLS;
+    document.getElementById("sbStreak").textContent=state.bestStreak;
+    document.getElementById("sbHearts").textContent=state.hearts;
+    document.getElementById("sbBoss").textContent= state.bossDone ? (state.bossWon?"DEFEATED":"ESCAPED") : "NOT REACHED";
+
+    var recap=document.getElementById("waveRecap");recap.innerHTML="";
+    state.waves.forEach(function(wv,i){
+      var row=document.createElement("div");row.className="wr-row";
+      var played=wv.results.length>0;
+      var needs = played && wv.rightCount<wv.items.length;
+      row.innerHTML='<span>'+(played?(wv.rightCount===wv.items.length?"✅":"⚠️"):"⛔")+'</span>'+
+        '<div class="wr-name">WAVE '+(i+1)+' · '+wv.def.name+(needs?'<br><span style="font-size:10.5px;color:#cdb9e8;">Review: '+wv.def.review+'</span>':'')+'</div>'+
+        '<span class="wr-score">'+(played? wv.rightCount+"/"+wv.items.length : "--")+'</span>';
+      recap.appendChild(row);
+    });
+    if(state.bossResults.length){
+      var bossRight=state.bossResults.filter(function(r){return r.correct;}).length;
+      var row=document.createElement("div");row.className="wr-row";
+      row.innerHTML='<span>'+(bossRight===5?"✅":"⚠️")+'</span>'+
+        '<div class="wr-name">BOSS · THE MEGA AD'+(bossRight<5?'<br><span style="font-size:10.5px;color:#cdb9e8;">Review: Captions and Content, the three claim shapes</span>':'')+'</div>'+
+        '<span class="wr-score">'+bossRight+"/5</span>";
+      recap.appendChild(row);
+    }
+
+    var note;
+    if(finalPass && state.right===TOTAL_CALLS){
+      note="A perfect defense. 25 calls, 25 right, best streak of "+state.bestStreak+". You know the three tool groups, the limits of each tool, and the three shapes an invented claim takes. Nothing gets past you.";
+    } else if(finalPass){
+      note="Feed defended with "+state.right+" right calls. Any wave marked ⚠️ above names the exact article to reread. The queue reshuffles every run if you want to chase a perfect defense.";
+    } else {
+      note="The feed takes 20 right calls to defend, and this run landed "+state.right+". Check the waves marked above, reread those articles, and insert another coin. The statements reshuffle every run.";
+    }
+    document.getElementById("goNote").textContent=note;
+  }, reason==="complete"?400:900);
+}
+
+function restart(){
+  /* clean playfield */
+  var field=pf();
+  field.querySelectorAll(".inv,.pod,.mothership,.laser,.boom").forEach(function(n){n.remove();});
+  document.getElementById("bossTimer").style.width="0";
+  startGame();
+}
+</script>
+</body>
+</html>
