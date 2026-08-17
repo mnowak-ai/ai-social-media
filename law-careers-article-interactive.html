@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Law Is Everywhere: The Career Field Hiding in Plain Sight</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #ffffff;
+    color: #2A0B47;
+    line-height: 1.7;
+    font-size: 18px;
+  }
+
+  .article-wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #2A0B47 0%, #4A1478 60%, #7B2FBE 100%);
+    color: #ffffff;
+    padding: 72px 24px 64px;
+    text-align: center;
+    margin-bottom: 56px;
+  }
+
+  .hero-inner { max-width: 760px; margin: 0 auto; }
+
+  .kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #E9A23B;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(34px, 5.5vw, 52px);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 20px;
+  }
+
+  .hero-sub {
+    font-size: 19px;
+    color: rgba(255, 255, 255, 0.85);
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .read-time {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 28px;
+  }
+
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: #4A1478;
+    margin: 48px 0 16px;
+    line-height: 1.3;
+  }
+
+  p { margin-bottom: 20px; }
+
+  .lead { font-size: 21px; }
+
+  .fun-fact {
+    background: linear-gradient(135deg, #2A0B47, #4A1478);
+    color: #ffffff;
+    border-radius: 14px;
+    padding: 32px 36px;
+    margin: 40px 0;
+  }
+
+  .fun-fact .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #E9A23B;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .fun-fact p { margin-bottom: 0; font-size: 18px; }
+  .fun-fact p + p { margin-top: 14px; }
+
+  /* ---------- GAME 1: Real or Fake ---------- */
+
+  .game-shell {
+    background: #F7F2FC;
+    border: 2px solid #E4D6F5;
+    border-radius: 16px;
+    padding: 32px 28px;
+    margin: 32px 0 40px;
+  }
+
+  .game-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #7B2FBE;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .game-title {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: #2A0B47;
+    margin-bottom: 6px;
+  }
+
+  .game-instructions {
+    font-size: 16px;
+    color: #6b5385;
+    margin-bottom: 24px;
+  }
+
+  .rf-progress {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: #7B2FBE;
+    margin-bottom: 14px;
+  }
+
+  .rf-card {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 2px solid #E4D6F5;
+    padding: 28px 24px;
+    text-align: center;
+    margin-bottom: 18px;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .rf-career {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: #2A0B47;
+  }
+
+  .rf-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .rf-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    padding: 14px 34px;
+    border-radius: 10px;
+    border: 2px solid #4A1478;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+    min-width: 130px;
+  }
+
+  .rf-btn:active { transform: scale(0.97); }
+  .rf-btn:focus-visible { outline: 3px solid #E9A23B; outline-offset: 2px; }
+
+  .rf-btn.real { background: #4A1478; color: #ffffff; }
+  .rf-btn.fake { background: #ffffff; color: #4A1478; }
+
+  .rf-btn:hover.real { background: #7B2FBE; border-color: #7B2FBE; }
+  .rf-btn:hover.fake { background: #F7F2FC; }
+
+  .rf-feedback {
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 18px;
+    font-size: 16px;
+    display: none;
+  }
+
+  .rf-feedback.correct { background: #E7F6E9; border: 2px solid #3E9C4C; color: #1e5527; display: block; }
+  .rf-feedback.wrong { background: #FCEEE9; border: 2px solid #D0603C; color: #7a3018; display: block; }
+
+  .rf-feedback strong { display: block; margin-bottom: 4px; }
+
+  .rf-next {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 12px 28px;
+    border-radius: 10px;
+    border: none;
+    background: #E9A23B;
+    color: #2A0B47;
+    cursor: pointer;
+    display: none;
+  }
+
+  .rf-next:focus-visible { outline: 3px solid #4A1478; outline-offset: 2px; }
+  .rf-next.show { display: inline-block; }
+
+  .rf-results { display: none; text-align: center; }
+  .rf-results.show { display: block; }
+
+  .rf-score {
+    font-family: 'Fraunces', serif;
+    font-size: 40px;
+    font-weight: 700;
+    color: #4A1478;
+    margin-bottom: 8px;
+  }
+
+  .rf-verdict { font-size: 17px; margin-bottom: 20px; }
+
+  .rf-replay {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 10px 24px;
+    border-radius: 10px;
+    border: 2px solid #4A1478;
+    background: #ffffff;
+    color: #4A1478;
+    cursor: pointer;
+  }
+
+  .rf-replay:focus-visible { outline: 3px solid #E9A23B; outline-offset: 2px; }
+
+  /* ---------- GAME 2: Path Explorer ---------- */
+
+  .ladder-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+
+  .ladder-tab {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: 2px solid #7B2FBE;
+    background: #ffffff;
+    color: #4A1478;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .ladder-tab:hover { background: #F0E6FA; }
+  .ladder-tab:focus-visible { outline: 3px solid #E9A23B; outline-offset: 2px; }
+
+  .ladder-tab.active {
+    background: #4A1478;
+    color: #ffffff;
+  }
+
+  .ladder-panel {
+    background: #ffffff;
+    border: 2px solid #E4D6F5;
+    border-radius: 12px;
+    padding: 26px 26px 20px;
+  }
+
+  .ladder-time {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: #E9A23B;
+    background: #2A0B47;
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 6px;
+    margin-bottom: 14px;
+  }
+
+  .ladder-jobs { list-style: none; margin-bottom: 16px; }
+
+  .ladder-jobs li {
+    padding: 10px 0 10px 28px;
+    position: relative;
+    border-bottom: 1px solid #F0E6FA;
+    font-size: 17px;
+  }
+
+  .ladder-jobs li:last-child { border-bottom: none; }
+
+  .ladder-jobs li::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 19px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #E9A23B;
+  }
+
+  .ladder-jobs li span {
+    display: block;
+    font-size: 14px;
+    color: #6b5385;
+  }
+
+  .ladder-next {
+    font-size: 15px;
+    color: #4A1478;
+    background: #F7F2FC;
+    border-radius: 8px;
+    padding: 12px 16px;
+  }
+
+  .ladder-next strong { color: #7B2FBE; }
+
+  .closing {
+    border-top: 3px solid #E9A23B;
+    margin-top: 56px;
+    padding-top: 36px;
+  }
+
+  .closing p:first-of-type {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fade-in { opacity: 1; transform: none; transition: none; }
+    .rf-btn, .ladder-tab { transition: none; }
+  }
+
+  @media (max-width: 600px) {
+    body { font-size: 17px; }
+    .hero { padding: 56px 20px 48px; }
+    .game-shell { padding: 26px 18px; }
+    .rf-buttons { flex-direction: column; }
+    .rf-btn { width: 100%; }
+    .fun-fact { padding: 26px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="kicker">Career Spotlight: Legal Careers</div>
+    <h1>Law Is Everywhere. Here's Why That's Great News for You.</h1>
+    <p class="hero-sub">Forget the courtroom drama on TV. The real world of legal careers is bigger, stranger, and more open than you think.</p>
+    <div class="read-time">3 MIN READ &middot; 2 CHALLENGES INSIDE</div>
+  </div>
+</header>
+
+<div class="article-wrap">
+
+  <p class="lead fade-in">Think about the last song you streamed, the last sneaker drop you saw, or the last app you downloaded. Every single one of them exists because a legal team made it happen. When Taylor Swift re-recorded her albums to take back control of her music, that was a legal strategy. When college athletes started getting paid for their name and image, lawyers built the rules that made it possible.</p>
+
+  <p class="fade-in">Law isn't just something that happens in a courtroom. It's the invisible framework behind almost everything you care about. And that means the career opportunities are much bigger than most students ever hear about.</p>
+
+  <h2 class="fade-in">The courtroom myth</h2>
+
+  <p class="fade-in">Here's something TV gets wrong: most people who work in law never argue a case in front of a judge. Not once. The dramatic courtroom showdown is a tiny slice of a huge field. The real work happens in music studios, tech companies, sports agencies, hospitals, and startups.</p>
+
+  <p class="fade-in">Think you know what counts as a real legal career? Prove it.</p>
+
+  <div class="game-shell fade-in" id="rf-game">
+    <span class="game-label">Challenge 01</span>
+    <div class="game-title">Real Career or Fake?</div>
+    <p class="game-instructions">Six careers. Tap Real if it's an actual legal field, Fake if we made it up.</p>
+
+    <div id="rf-play">
+      <div class="rf-progress" id="rf-progress">Career 1 of 6</div>
+      <div class="rf-card">
+        <div class="rf-career" id="rf-career"></div>
+      </div>
+      <div class="rf-feedback" id="rf-feedback" role="status" aria-live="polite"></div>
+      <div class="rf-buttons" id="rf-buttons">
+        <button class="rf-btn real" id="btn-real" type="button">Real</button>
+        <button class="rf-btn fake" id="btn-fake" type="button">Fake</button>
+      </div>
+      <div style="text-align:center; margin-top:16px;">
+        <button class="rf-next" id="rf-next" type="button">Next career</button>
+      </div>
+    </div>
+
+    <div class="rf-results" id="rf-results">
+      <div class="rf-score" id="rf-score"></div>
+      <p class="rf-verdict" id="rf-verdict"></p>
+      <button class="rf-replay" id="rf-replay" type="button">Play again</button>
+    </div>
+  </div>
+
+  <p class="fade-in">And here's the part almost nobody tells students: you don't need a law degree for many of these paths. Paralegals, compliance officers, mediators, court reporters, and legal tech specialists are all essential legal careers, and many start with a certificate or a two-year degree.</p>
+
+  <h2 class="fade-in">Work that actually matters</h2>
+
+  <p class="fade-in">Legal work changes lives in ways few careers can match. The Innocence Project has helped free hundreds of people who were wrongfully convicted, many through DNA evidence their original trials never had. Immigration lawyers reunite families. Public defenders stand up for people who can't afford anyone else in their corner.</p>
+
+  <p class="fade-in">Some of the biggest moments in American history were legal moments. Thurgood Marshall argued Brown v. Board of Education, the case that ended school segregation, before he ever became a Supreme Court justice. If you want a career where your work leaves a mark, law is full of them.</p>
+
+  <div class="fun-fact fade-in">
+    <span class="label">Two facts to drop at lunch</span>
+    <p>The Supreme Court building has a basketball court on its top floor. Its nickname? "The highest court in the land."</p>
+    <p>Lawyers once argued a real case about whether a monkey owned the copyright to a selfie it took. (The monkey lost.)</p>
+  </div>
+
+  <h2 class="fade-in">The field is being rebuilt right now</h2>
+
+  <p class="fade-in">Here's the most exciting part for anyone starting out today: artificial intelligence is transforming legal work as we speak. Document review that used to take a team weeks can now happen in hours. That shift is creating brand-new roles, like legal tech specialists and AI compliance analysts, that didn't exist five years ago.</p>
+
+  <p class="fade-in">That means you aren't entering the field behind. You're entering while it's being rebuilt. A student who understands AI tools today has a real edge, even over people who have practiced law for twenty years.</p>
+
+  <h2 class="fade-in">A ladder you can actually climb</h2>
+
+  <p class="fade-in">Law is one of the few high-opportunity fields with an on-ramp at every education level. Tap a starting point and see what opens up.</p>
+
+  <div class="game-shell fade-in">
+    <span class="game-label">Challenge 02</span>
+    <div class="game-title">Choose Your Starting Point</div>
+    <p class="game-instructions">Every level unlocks real jobs. Explore them all.</p>
+
+    <div class="ladder-tabs" role="tablist" aria-label="Education levels">
+      <button class="ladder-tab active" type="button" role="tab" aria-selected="true" data-level="cert">Certificate</button>
+      <button class="ladder-tab" type="button" role="tab" aria-selected="false" data-level="assoc">Associate's</button>
+      <button class="ladder-tab" type="button" role="tab" aria-selected="false" data-level="bach">Bachelor's</button>
+      <button class="ladder-tab" type="button" role="tab" aria-selected="false" data-level="jd">Law school</button>
+    </div>
+
+    <div class="ladder-panel" id="ladder-panel">
+      <span class="ladder-time" id="ladder-time"></span>
+      <ul class="ladder-jobs" id="ladder-jobs"></ul>
+      <div class="ladder-next" id="ladder-next"></div>
+    </div>
+  </div>
+
+  <p class="fade-in">You can start working in the field, earning real money, and then decide how far you want to go. No single gate. No one path. Every step counts.</p>
+
+  <div class="closing fade-in">
+    <p>The legal field isn't waiting for a certain kind of person. It's waiting for people who are curious, who like solving problems, and who want their work to matter.</p>
+    <p>That could be you. The door is open.</p>
+  </div>
+
+</div>
+
+<script>
+  // ---------- Fade-in on scroll ----------
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach((el) => observer.observe(el));
+
+  // ---------- Game 1: Real or Fake ----------
+  const careers = [
+    { name: "Space Law", real: true, note: "Real. Satellites, launch contracts, and even asteroid mining rights all need lawyers." },
+    { name: "Sneaker Contract Law", real: false, note: "We made this one up. But sneaker collabs ARE handled by real entertainment and IP lawyers." },
+    { name: "Video Game IP Law", real: true, note: "Real. Someone has to protect game characters, code, and creators from copycats." },
+    { name: "Weather Litigation Law", real: false, note: "Fake as a named field. Though climate law is very real and growing fast." },
+    { name: "NIL &amp; Sports Law", real: true, note: "Real. Lawyers build the deals that let college athletes earn from their name and image." },
+    { name: "Cannabis Law", real: true, note: "Real. One of the fastest-growing legal specialties in the country." }
+  ];
+
+  let rfIndex = 0;
+  let rfScore = 0;
+  let rfOrder = [];
+
+  const rfCareerEl = document.getElementById('rf-career');
+  const rfProgressEl = document.getElementById('rf-progress');
+  const rfFeedbackEl = document.getElementById('rf-feedback');
+  const rfNextBtn = document.getElementById('rf-next');
+  const rfButtons = document.getElementById('rf-buttons');
+  const btnReal = document.getElementById('btn-real');
+  const btnFake = document.getElementById('btn-fake');
+  const rfPlay = document.getElementById('rf-play');
+  const rfResults = document.getElementById('rf-results');
+  const rfScoreEl = document.getElementById('rf-score');
+  const rfVerdictEl = document.getElementById('rf-verdict');
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function rfStart() {
+    rfOrder = shuffle(careers);
+    rfIndex = 0;
+    rfScore = 0;
+    rfPlay.style.display = 'block';
+    rfResults.classList.remove('show');
+    rfShowCard();
+  }
+
+  function rfShowCard() {
+    const c = rfOrder[rfIndex];
+    rfCareerEl.innerHTML = c.name;
+    rfProgressEl.textContent = 'Career ' + (rfIndex + 1) + ' of ' + rfOrder.length;
+    rfFeedbackEl.className = 'rf-feedback';
+    rfFeedbackEl.innerHTML = '';
+    rfNextBtn.classList.remove('show');
+    rfButtons.style.display = 'flex';
+    btnReal.disabled = false;
+    btnFake.disabled = false;
+  }
+
+  function rfAnswer(guessReal) {
+    const c = rfOrder[rfIndex];
+    const correct = guessReal === c.real;
+    if (correct) rfScore++;
+    rfFeedbackEl.className = 'rf-feedback ' + (correct ? 'correct' : 'wrong');
+    rfFeedbackEl.innerHTML = '<strong>' + (correct ? 'Correct!' : 'Not quite.') + '</strong>' + c.note;
+    rfButtons.style.display = 'none';
+    rfNextBtn.classList.add('show');
+    rfNextBtn.textContent = rfIndex === rfOrder.length - 1 ? 'See my results' : 'Next career';
+  }
+
+  function rfNext() {
+    rfIndex++;
+    if (rfIndex >= rfOrder.length) {
+      rfFinish();
+    } else {
+      rfShowCard();
+    }
+  }
+
+  function rfFinish() {
+    rfPlay.style.display = 'none';
+    rfResults.classList.add('show');
+    rfScoreEl.textContent = rfScore + ' / ' + rfOrder.length;
+    let verdict;
+    if (rfScore === rfOrder.length) {
+      verdict = "Perfect score. You already see how wide this field really is.";
+    } else if (rfScore >= 4) {
+      verdict = "Nice work. The field is even bigger than most people guess.";
+    } else {
+      verdict = "Surprised? That's the point. Legal careers go way beyond the courtroom.";
+    }
+    rfVerdictEl.textContent = verdict;
+  }
+
+  btnReal.addEventListener('click', () => rfAnswer(true));
+  btnFake.addEventListener('click', () => rfAnswer(false));
+  rfNextBtn.addEventListener('click', rfNext);
+  document.getElementById('rf-replay').addEventListener('click', rfStart);
+
+  rfStart();
+
+  // ---------- Game 2: Path Explorer ----------
+  const ladderData = {
+    cert: {
+      time: "A few months to 1 year",
+      jobs: [
+        { title: "Legal assistant", desc: "Keep cases organized and moving" },
+        { title: "Court clerk assistant", desc: "The engine room of the courthouse" },
+        { title: "E-discovery technician", desc: "Manage digital evidence with AI tools" }
+      ],
+      next: "Next step: an <strong>associate's degree</strong> opens paralegal and mediation roles."
+    },
+    assoc: {
+      time: "About 2 years",
+      jobs: [
+        { title: "Paralegal", desc: "Research, drafting, and case prep" },
+        { title: "Court reporter", desc: "Capture the official record" },
+        { title: "Compliance assistant", desc: "Help companies follow the rules" }
+      ],
+      next: "Next step: a <strong>bachelor's degree</strong> unlocks analyst and specialist careers."
+    },
+    bach: {
+      time: "About 4 years",
+      jobs: [
+        { title: "Compliance officer", desc: "Every industry needs them" },
+        { title: "Legal tech specialist", desc: "Where law meets AI" },
+        { title: "Mediator", desc: "Resolve disputes outside court" },
+        { title: "Contract analyst", desc: "The deals behind every deal" }
+      ],
+      next: "Next step: <strong>law school</strong> is the path to practicing as an attorney."
+    },
+    jd: {
+      time: "3 years after your bachelor's",
+      jobs: [
+        { title: "Entertainment lawyer", desc: "Music, film, and streaming deals" },
+        { title: "Sports &amp; NIL agent-attorney", desc: "Represent athletes" },
+        { title: "Immigration attorney", desc: "Reunite families, change lives" },
+        { title: "Public defender", desc: "Stand up for those who need it most" },
+        { title: "AI &amp; privacy attorney", desc: "The newest frontier" }
+      ],
+      next: "And it doesn't stop there: <strong>judge, professor, policymaker, founder.</strong> The ladder keeps going."
+    }
+  };
+
+  const tabs = document.querySelectorAll('.ladder-tab');
+  const timeEl = document.getElementById('ladder-time');
+  const jobsEl = document.getElementById('ladder-jobs');
+  const nextEl = document.getElementById('ladder-next');
+
+  function showLevel(level) {
+    const d = ladderData[level];
+    timeEl.textContent = d.time;
+    jobsEl.innerHTML = d.jobs.map(j =>
+      '<li>' + j.title + '<span>' + j.desc + '</span></li>'
+    ).join('');
+    nextEl.innerHTML = d.next;
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+      showLevel(tab.dataset.level);
+    });
+  });
+
+  showLevel('cert');
+</script>
+
+</body>
+</html>
